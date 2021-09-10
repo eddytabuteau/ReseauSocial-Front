@@ -1,0 +1,40 @@
+.divCenter{
+    display:flex;
+    justify-content:center;
+  }
+  
+  .loading-spinner-eclipse{
+    width: 7rem;
+    height: 7rem;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index:1000;
+    padding: 0.5rem;
+  }
+  .loading-spinner div {
+    position: absolute;
+    animation: loading-spinner 1s linear infinite;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    box-shadow: 0 5px 0 0 #21a1fdfa;
+    transform-origin: 3rem 3.125rem;
+    z-index:1000;
+    box-sizing: content-box;
+  }
+  .loading-spinner {
+    position: fixed;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+  }
+  @keyframes loading-spinner {
+    0% { transform: rotate(0deg) }
+    50% { transform: rotate(180deg) }
+    100% { transform: rotate(360deg) }
+  }
+  
+  

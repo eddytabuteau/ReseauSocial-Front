@@ -1,0 +1,75 @@
+input,select{
+  width: 180px!important;
+}
+.invalid{
+  color: red;
+}
+.card{
+  margin: 4%;
+}
+::ng-deep .mat-stepper-horizontal{
+  background-color: white
+}
+::ng-deep .mat-stepper-horizontal-line, ::ng-deep.mat-step-header .mat-step-icon{
+  background-color: rgb(160, 160, 160);
+}
+.mat-form-field {
+  margin-top: 16px;
+}
+label{
+  color: #227afd;
+}
+::ng-deep .mat-horizontal-stepper-header{
+  pointer-events: none !important;
+}
+
+::ng-deep .mat-vertical-stepper-header{
+  pointer-events: none !important;
+  
+}
+::ng-deep .mat-step-header .mat-step-label.mat-step-label-active{
+  color: rgba(0,0,0,.54);
+}
+
+::ng-deep.mat-step-header .mat-step-icon-state-done{
+  background-color: green !important;
+}
+::ng-deep.mat-step-icon-state-done +::ng-deep.mat-step-label.mat-step-label-active {
+  color: green !important;
+}
+::ng-deep.mat-step-icon-selected{
+  background-color: blue!important;
+}
+
+::ng-deep.mat-step-label-selected{
+  color: #227afd!important;
+  font-weight: bold!important;
+}
+.mat-stepper-horizontal {
+  margin-top: 8px;
+}
+#photoProfil{
+  height: 150px;
+  width: 180px;
+  border-radius: 50%;
+  opacity: 0;
+}
+#photo{
+  width: inherit!important;
+}
+
+.obligation{
+  color: red;
+}
+.muted{
+  opacity: 0.5;
+}
+//mobile
+::ng-deep .mat-stepper-vertical{
+  background-color: white;
+}
+::ng-deep .mat-stepper-vertical-line::before{
+  background-color: rgb(160, 160, 160);
+}
+
+

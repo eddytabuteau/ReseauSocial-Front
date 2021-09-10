@@ -1,0 +1,16 @@
+::ng-deep.navbar-toggler{
+    color: #bae1fcfa!important;
+}
+.navbar-nav a:hover{
+    color: #72c0f7fa!important;
+}
+
+.onFocus{
+    color: #257cff!important;
+}
+.offFocus{
+    color: none!important;
+}
+::ng-deep.navbar{
+z-index: 1;
+}

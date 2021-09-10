@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+      <a class="navbar-brand">
+        <img src="./../../favicon.ico" alt="" width="30" height="24" class="d-inline-block align-text-top">
+        Reseau Social
+    </a>
+      <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav" *ngIf="dataLog">
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'profil', 'onFocus': focus == 'profil'}" (click)="onFocus('profil')" [routerLink]="['/profil/' + id]">Mon profil</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'chat', 'onFocus': focus == 'chat'}" (click)="onFocus('chat')" href="#">Chat</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'messagesPrivées', 'onFocus': focus == 'messagesPrivées'}" (click)="onFocus('messagesPrivées')" href="#">Messages privées</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'listeAmis', 'onFocus': focus == 'listeAmis'}" (click)="onFocus('listeAmis')" [routerLink]="['/liste-amis']">Liste d'amis</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'rechercheAmis', 'onFocus': focus == 'rechercheAmis'}" (click)="onFocus('rechercheAmis')" [routerLink]="['/recherche-ami']">Chercher un(e) ami(e)</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'InvitationsEnCours', 'onFocus': focus == 'InvitationsEnCours'}" (click)="onFocus('InvitationsEnCours')" [routerLink]="['/invitation-en-cours']">Invitations en cours</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'InvitationsAttenteConfirmation', 'onFocus': focus == 'InvitationsAttenteConfirmation'}" (click)="onFocus('InvitationsAttenteConfirmation')" [routerLink]="['/invitation-attente-confirmation']">Invitations en attente de confirmation</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'listeRecommandation', 'onFocus': focus == 'listeRecommandation'}" (click)="onFocus('listeRecommandation')" [routerLink]="['/recommandation']">Liste recommandation</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'admin', 'onFocus': focus == 'admin'}" (click)="onFocus('admin')" href="#">Admin</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'deconnexion', 'onFocus': focus == 'deconnexion'}" (click)="deconnexion()" [routerLink]="['/']">Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </nav>

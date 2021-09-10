@@ -1,0 +1,71 @@
+<div *ngIf="!loading">
+    <app-loading-spinner></app-loading-spinner>
+</div>
+<div *ngIf="userProfilData && !commantaires" class="d-flex text-primary">
+    <div class="col-3">
+        <div class="card border-primary">
+            <div>
+                <div class="container">
+                    <div class="row">
+                        <img [src]="userProfilData.photo" alt="photoProfil" class="photoUser mt-2 col-6">
+                        <p class="col-6 pseudoUser">{{userProfilData.pseudo}}</p>
+                    </div>
+                    <div class="text-center">
+                        <p>Prénom : {{userProfilData.firstName}}</p>
+                        <p>Nom : {{userProfilData.lastName}}</p>
+                        <p>Age : {{userProfilData.age}}</p>
+                        <p>Nationalité : {{userProfilData.nationality}}</p>
+                        <p>Genre : {{userProfilData.gender}}</p>
+                        <div class="border-primary mb-2 presentationIuser">
+                            <p>Présentation :</p>
+                            <p>{{userProfilData.presentation}}</p>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col mt-2" style="margin-right: 2%;margin-left: 2%;">
+            <div class="mb-5">
+                <input type="text" id="post" class="form-control" [(ngModel)]="texte" placeholder="Envoyer un post...">
+                <button class="btn btn-primary"(click)="send(texte)">Envoyer mon post</button>
+            </div>
+            <div *ngFor="let post of messageProfil">
+                <div class="card border-primary mb-3">
+                    <div class="mb-4" style="margin-left: 2%;">
+                            <img [src]="'data:image/jpeg;base64,'+ post.photoCreation" alt="photoProfil" class="photoUser mt-2">
+                            <span class="pseudoUser" style="margin-left: 2%;">{{post.pseudoCreation}}</span>
+                    </div>
+                    <p class="text-center mb-4">{{post.message}}</p>
+                    <p>Posté le : {{post.date | date: 'short'}}</p>
+                    <p>Nombre de commentaire : </p>
+                    <div>
+                        <button class="btn btn-primary"(click)="commentaire(post)">Voir les commentaires</button>
+                        <button class="btn btn-warning"(click)="supp(post)">Delete</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div *ngIf="commantaires" class="mt-2" style="margin-right: 2%;margin-left: 2%;">
+    <div class="text-center">
+        <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour sur le profil</span>
+    </div>
+    <div class="mb-5">
+        <input type="text" id="commentaire" class="form-control" [(ngModel)]="texteCommentaire" placeholder="Envoyer un commentaire...">
+        <button class="btn btn-primary"(click)="sendCommentaire(texteCommentaire)">Envoyer mon commentaire</button>
+    </div>
+    <div *ngFor="let commentaire of messageProfilCommentaires">
+        <div class="card border-primary mb-3 text-primary">
+            <div class="mb-4" style="margin-left: 2%;">
+                    <img [src]="'data:image/jpeg;base64,'+ commentaire.photoCreation" alt="photoProfil" class="photoUser mt-2">
+                    <span class="pseudoUser" style="margin-left: 2%;">{{commentaire.pseudoCreation}}</span>
+            </div>
+            <p class="text-center mb-4">{{commentaire.commentaire}}</p>
+            <p>Posté le : {{commentaire.date | date: 'short'}}</p>
+        </div>
+    </div>
+</div>

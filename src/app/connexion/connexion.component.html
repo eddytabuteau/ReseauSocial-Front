@@ -1,0 +1,32 @@
+
+<div class="card border-primary mt-5">
+    <div *ngIf="loading">
+        <app-loading-spinner></app-loading-spinner>
+    </div>
+    <div class="card-body">
+        <div>
+            <form [formGroup]="userlogin" (ngSubmit)="onSubmitUserlogin()">
+                <div class="d-flex justify-content-around flex-wrap mt-5">
+                    <div class="form-group">
+                        <label for="pseudo">Pseudo</label>
+                        <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
+                        <p *ngIf="!userlogin.controls.pseudo.valid && userlogin.controls.pseudo.touched" class="obligation">*Champs obligatoire</p>
+                        <p class="obligation" *ngIf="pseudo === false">*Le pseudo n'est pas bon</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" class="form-control" formControlName="password">
+                        <p *ngIf="!userlogin.controls.password.valid && userlogin.controls.password.touched" class="obligation">*Champs obligatoire</p>
+                        <p class="obligation" *ngIf="password === false">*Le mot de passe n'est pas bon</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mt-5">
+                    <button type="submit" class="btn btn-outline-primary" [disabled]="userlogin.invalid">Login</button>
+                </div>
+                <div class="d-flex justify-content-center mt-5">
+                   <p style="border-bottom: 2px solid; cursor: pointer" [routerLink]="['/reset-password']">Mot de passe oublié</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
