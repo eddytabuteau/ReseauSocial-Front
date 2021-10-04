@@ -9,9 +9,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav" *ngIf="dataLog">
-          <a class="nav-link" [ngClass]="{'offFocus': focus != 'profil', 'onFocus': focus == 'profil'}" (click)="onFocus('profil')" [routerLink]="['/profil/' + id]">Mon profil</a>
-          <a class="nav-link" [ngClass]="{'offFocus': focus != 'chat', 'onFocus': focus == 'chat'}" (click)="onFocus('chat')" href="#">Chat</a>
-          <a class="nav-link" [ngClass]="{'offFocus': focus != 'messagesPrivées', 'onFocus': focus == 'messagesPrivées'}" (click)="onFocus('messagesPrivées')" href="#">Messages privées</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'profil', 'onFocus': focus == 'profil'}" (click)="onFocus('profil')" [routerLink]="['/mon-profil/' + id]">Mon profil</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'chat', 'onFocus': focus == 'chat'}" (click)="onFocus('chat')" [routerLink]="['/chat-accueil']">Chat</a>
+          <a class="nav-link" [ngClass]="{'offFocus': focus != 'messagesPrivées', 'onFocus': focus == 'messagesPrivées'}" (click)="onFocus('messagesPrivées')" [routerLink]="['/liste-amis']">Messages privées</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'listeAmis', 'onFocus': focus == 'listeAmis'}" (click)="onFocus('listeAmis')" [routerLink]="['/liste-amis']">Liste d'amis</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'rechercheAmis', 'onFocus': focus == 'rechercheAmis'}" (click)="onFocus('rechercheAmis')" [routerLink]="['/recherche-ami']">Chercher un(e) ami(e)</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'InvitationsEnCours', 'onFocus': focus == 'InvitationsEnCours'}" (click)="onFocus('InvitationsEnCours')" [routerLink]="['/invitation-en-cours']">Invitations en cours</a>

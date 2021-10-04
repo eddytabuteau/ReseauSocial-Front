@@ -39,11 +39,10 @@
                             <span class="pseudoUser" style="margin-left: 2%;">{{post.pseudoCreation}}</span>
                     </div>
                     <p class="text-center mb-4">{{post.message}}</p>
-                    <p>Posté le : {{post.date | date: 'short'}}</p>
-                    <p>Nombre de commentaire : </p>
+                    <p>Posté le : {{post.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
                     <div>
                         <button class="btn btn-primary"(click)="commentaire(post)">Voir les commentaires</button>
-                        <button class="btn btn-warning"(click)="supp(post)">Delete</button>
+                        <button class="btn btn-warning"(click)="supp(post)">Supprimer</button>
                     </div>
                 </div>
             </div>
@@ -65,7 +64,7 @@
                     <span class="pseudoUser" style="margin-left: 2%;">{{commentaire.pseudoCreation}}</span>
             </div>
             <p class="text-center mb-4">{{commentaire.commentaire}}</p>
-            <p>Posté le : {{commentaire.date | date: 'short'}}</p>
+            <p>Posté le : {{commentaire.date | date: 'fullDate' : 'UTC+2' : 'fr'}}</p>
         </div>
     </div>
 </div>

@@ -1,0 +1,19 @@
+.center{
+    text-align: center;
+}
+.center  div{
+    margin-top: 9%;
+}
+h5{
+    font-weight: bold;
+}
+.colIndex{
+    cursor:default;
+    transition: transform 330ms ease-in-out;
+    transform: scale(1);
+  }
+.colIndex:hover{
+    box-shadow: 0 10px 25px 0 #bae1fcfa, 0 5px 15px 0 #bae1fcfa;
+    transform: scale(1.03);
+    z-index: 1;
+}

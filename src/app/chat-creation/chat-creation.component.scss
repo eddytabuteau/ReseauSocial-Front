@@ -1,0 +1,23 @@
+.photoUser{
+    height: 40px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.users:hover{
+    box-shadow: 0 10px 25px 0 #bae1fcfa, 0 5px 15px 0 #bae1fcfa;
+    transform: scale(1.03);
+    border-radius: 0.3rem;
+}
+.users{
+    cursor: pointer;
+}
+
+::ng-deep.modal-dialog{
+    pointer-events: inherit;
+}
+
+.participant{
+    cursor: pointer;
+    border: 1px #bae1fcfa solid;
+}

@@ -1,0 +1,16 @@
+.photoUser{
+    height: 80px;
+    width: 100px;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+
+.userDiscussionRight{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.userDiscussionLeft{
+  display: flex;
+  justify-content:flex-start
+}

@@ -24,6 +24,12 @@ import { InvitationAttenteConfirmationComponent } from './invitation-attente-con
 import { ListeAmisComponent } from './liste-amis/liste-amis.component';
 import { RecommandationComponent } from './recommandation/recommandation.component';
 import { SingleProfilComponent } from './single-profil/single-profil.component';
+import { DiscussionComponent } from './discussion/discussion.component';
+import { MonProfilComponent } from './mon-profil/mon-profil.component';
+import { OrderbyPipe } from './orderby.pipe';
+import { ChatCreationComponent } from './chat-creation/chat-creation.component';
+import { ChatAccueilComponent } from './chat-accueil/chat-accueil.component';
+import { ChatSujetComponent } from './chat-sujet/chat-sujet.component';
 
 
 @NgModule({
@@ -42,7 +48,13 @@ import { SingleProfilComponent } from './single-profil/single-profil.component';
     InvitationAttenteConfirmationComponent,
     ListeAmisComponent,
     RecommandationComponent,
-    SingleProfilComponent
+    SingleProfilComponent,
+    DiscussionComponent,
+    MonProfilComponent,
+    OrderbyPipe,
+    ChatCreationComponent,
+    ChatAccueilComponent,
+    ChatSujetComponent
   ],
   imports: [
     BrowserModule,

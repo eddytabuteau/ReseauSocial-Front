@@ -23,6 +23,7 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   pseudoRecommandationReceveur?: string;
   recommandationUser = false;
   pasDeRecommandation = false;
+  user: any;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
@@ -63,16 +64,19 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   
       this.socketService.send('updateDataUser',pseudoDemandeurUpdate);
       this.socketService.listenOnce('reponse updateDataUser').subscribe((data) =>{
+        console.log(data)
         // @ts-ignore: Object is possibly 'null'.
         this.userService.userLog(data)
         // @ts-ignore: Object is possibly 'null'.
         this.listeAmisConfDemandeurRecommandation = data[0].listeUser[0].listeAmisConfirmées
-        console.log(this.listeAmisConfDemandeurRecommandation)
+        // @ts-ignore: Object is possibly 'null'.
+        this.user = data[0]
+
   
         this.socketService.send('recherche user invitation',this.listeAmisConfDemandeurRecommandation);
         this.socketService.listenOnce('reponse recherche user invitation').subscribe((data) =>{
           this.resRechercheUsers = data;
-          const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;search: boolean;invitation: boolean;liste: any}[] =[]
+          const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;search: boolean;invitation: boolean;liste: any,connexion: boolean,connexionId: string,discussion:any,rejoindreDiscussion: boolean,discussionConfirmee: boolean,discussionEnCours: any, idDiscussion: string}[] =[]
           // @ts-ignore: Object is possibly 'null'.
           this.resRechercheUsers.forEach(element => {
             const pseudo = element.pseudo;
@@ -81,12 +85,40 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
             const buffer = 'data:image/jpeg;base64,' + element.photo;
             const email = element.email
             const liste = element.listeUser[0]
+            const discussion = element.discussion[0]
             const invitation = false;
             const search = false;
-              users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,search: search,invitation: invitation,liste:liste})
+            const connexion = element.connexion;
+            const connexionId = element.socketId;
+            let rejoindreDiscussion = false;
+            let discussionConfirmee = false;
+            const discussionEnCours = discussion.discussionEncours[0]
+            let idDiscussion = "";
+            
+            discussion.DiscussionConfirmées.forEach((element: any) => {
+              console.log(element)
+              if(element.pseudo === pseudoDemandeurUpdate){
+                discussionConfirmee = true;
+                idDiscussion = element.idDiscussion
+              }
             });
+
+            if(discussionEnCours !== undefined){
+              console.log()
+              this.user.discussion[0].rejoindreDiscussion.forEach((element: any) => {
+                if(element.pseudoDemandeur === pseudo){
+                  rejoindreDiscussion = true;
+                  idDiscussion = element.idDiscussion
+                }
+              });
+            }
+              users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,search: search,invitation: invitation,liste:liste,connexion: connexion,connexionId: connexionId,discussion: discussion, rejoindreDiscussion: rejoindreDiscussion,discussionConfirmee:discussionConfirmee,discussionEnCours: discussionEnCours, idDiscussion: idDiscussion})
+          });
+
+            
             this.loading = false;
             this.users = users
+            console.log(users)
         })
       })
     }
@@ -150,16 +182,56 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
 
   profilUser(dataUser:any): void{
     console.log(dataUser)
-    this.users.forEach((element: { pseudo: string;invitation: boolean }) => {
-      if(element.pseudo == dataUser.pseudo){
-        element.invitation = true;
-        this.resInvitation = "Invitation acceptée"
-        // @ts-ignore: Object is possibly 'null'.
-        this.socketService.send('invitation reponse',{dataUserDemandeur:dataUser,dataUseReceveur:this.userService.user[0].pseudo,resInvitation: this.resInvitation});
-        
-      }
-    });
+    this.router.navigate(['/profil/' + dataUser.pseudo])
+ 
   }
+
+  discussion(dataUser:any): void{
+
+    const demandeur = {
+      // @ts-ignore: Object is possibly 'null'.
+      mail: this.userService.user[0].email,
+      // @ts-ignore: Object is possibly 'null'.
+      pseudo: this.userService.user[0].pseudo
+    }
+    const receveur = {
+      mail: dataUser.email,
+      pseudo: dataUser.pseudo
+    }
+
+    if(dataUser.discussionConfirmee){
+      console.log('discussion Confirmée')
+      const confirm = true;
+      //lancer une discussion quand l'ID est déjà créé
+      this.socketService.send('creation discussion user',{demandeur:demandeur,receveur: receveur,idDiscussion: dataUser.idDiscussion,confirme: confirm});
+      this.socketService.listenOnce('reponse creation discussion user').subscribe((data) =>{
+        this.router.navigate(['/discussion/' + data])
+        console.log(data)
+      })
+    }
+    else{
+  
+      this.socketService.send('creation discussion user',{demandeur:demandeur,receveur: receveur,idDiscussion: dataUser.connexionId,confirme: false});
+      this.socketService.listenOnce('reponse creation discussion user').subscribe((data) =>{
+        this.router.navigate(['/discussion/' + data])
+        console.log(data)
+      })
+    }
+    
+ 
+  }
+
+  discussionRejoindre(user: any): void{
+// @ts-ignore: Object is possibly 'null'.
+const pseudoReceveur =  this.userService.user[0].pseudo
+//rejoindre une discussion lors de sa création
+      this.socketService.send('rejoindre Discussion creation',{pseudoOrigine:user.pseudo,pseudoReceveur: pseudoReceveur,idDiscussion: user.idDiscussion});
+      this.socketService.listenOnce('reponse rejoindre Discussion creation').subscribe((data) =>{
+        this.router.navigate(['/discussion/' + data])
+        console.log(data)
+      })
+  }
+  
 
   //recommandation page
   searchReco(){

@@ -1,0 +1,23 @@
+<div *ngIf="!loading">
+    <app-loading-spinner></app-loading-spinner>
+</div>
+
+<div class="text-center d-flex justify-content-center mt-5">
+    <div class="card border-primary mb-3 colIndex" [routerLink]="['/chat-creation']" style="max-width: 18rem;">
+        <div class="card-body text-primary">
+            <h5 class="card-title">Lancer un sujet de chat</h5>
+        </div>
+    </div>
+</div>
+
+<div *ngFor="let chat of chats | orderby:'desc':'date'" class="ml-4 mr-4">
+    <div class="card border-primary mb-3 text-primary">
+        <p class="text-center mb-4 mt-4" style="font-size: 1.6rem;font-weight: bold;">{{chat.sujet}}</p>
+        <p>Posté le : {{chat.date | date: 'fullDate' : 'UTC+2' : 'fr'}}</p>
+        <p>Discussion lancée par {{chat.pseudoCreation}}</p>
+        <div>
+            <button class="btn btn-primary" (click)="chatLog(chat)">Accéder à la discussion</button>
+            <button *ngIf="user.pseudo === chat.pseudoCreation" class="btn btn-warning" (click)="supp(chat)">Supprimer</button>
+        </div>
+    </div>
+</div>

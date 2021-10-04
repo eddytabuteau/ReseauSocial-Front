@@ -3,6 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { SocketService } from '../services/socket.service';
 import { UserService } from '../services/user.service';
 
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr, 'fr');
+
 @Component({
   selector: 'app-single-profil',
   templateUrl: './single-profil.component.html',
@@ -56,7 +60,8 @@ export class SingleProfilComponent implements OnInit {
       photo: 'data:image/jpeg;base64,' + reponse.photo,
       mail:reponse.email
     }
-    this.messageProfil = reponse.messageProfil
+    const message = reponse.messageProfil.reverse()
+    this.messageProfil = message
     this.loading = true;
     console.log(this.userProfilData)
 
@@ -129,6 +134,11 @@ export class SingleProfilComponent implements OnInit {
     this.messageProfilCommentaires = []
   }
   supp(post: any): void{
-
+    this.loading = false;
+    console.log(post)
+    this.socketService.send('supprimer message profil',{idMessage:post.idMessage,pseudo:post.profilDestination});
+    this.socketService.listenOnce('reponse supprimer message profil').subscribe((data) =>{
+      this.profil();
+    })
   }
 }

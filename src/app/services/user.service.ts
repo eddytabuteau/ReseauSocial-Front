@@ -46,6 +46,7 @@ export class UserService implements OnDestroy {
   }
 
   emitPostServiceSubject() {
+    console.log(this.user)
     this.PostServiceSubject.next(this.user);
     this.PostLogServiceSubject.next(this.resLog);
     this.PostLoOutgServiceSubject.next(this.userInscription);

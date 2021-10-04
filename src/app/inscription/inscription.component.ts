@@ -161,9 +161,11 @@ initFormPresentation() {
         listeAmisRecommandé:[],
       }],
       [{DiscussionConfirmées:[],
-        DiscussionAttente:[],
+        discussionEncours:[],
+        rejoindreDiscussion:[]
       }],
-      [{}],
+      [],
+      [],
       false,
       '',
       [{}],

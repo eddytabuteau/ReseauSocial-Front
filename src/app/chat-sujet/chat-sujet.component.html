@@ -1,0 +1,26 @@
+<div *ngIf="!loading">
+    <app-loading-spinner></app-loading-spinner>
+</div>
+
+<div class="mt-2" style="margin-right: 2%;margin-left: 2%;">
+    <div class="text-center" (click)="back()">
+        <span class="muted cursor text-center"  style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Back</span>
+    </div>
+    <div class="mb-5">
+        <input type="text" id="commentaire" class="form-control" [(ngModel)]="texteMessage" placeholder="Envoyer un commentaire...">
+        <button class="btn btn-primary"(click)="sendMessage(texteMessage)">Envoyer mon message</button>
+    </div>
+    <div *ngFor="let message of messageChat | orderby:'desc':'date'">
+            <div class="card border-primary mb-3 text-primary">
+                <div class="mb-4" style="margin-left: 2%;">
+                        <img [src]="'data:image/jpeg;base64,'+ message.photoCreation" alt="photoProfil" class="photoUser mt-2" style="border-color: blue;">
+                        <span class="pseudoUser" style="margin-left: 2%;">{{message.pseudoCreation}}</span>
+                </div>
+                <p class="text-center mb-4" style="font-size: 1.6rem;font-weight: bold;">{{message.message}}</p>
+                <p>Posté le : {{message.date | date: 'fullDate' : 'UTC+2' : 'fr'}}</p>
+                <div *ngIf="user.pseudo === message.pseudoCreation">
+                    <button class="btn btn-warning"(click)="supp(message)">Supprimer</button>
+                </div>
+            </div>
+    </div>
+</div>

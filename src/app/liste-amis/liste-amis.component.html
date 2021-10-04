@@ -20,6 +20,11 @@
                     <button  (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Voir le profil</button>
                     <button (click)="recommandation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Proposé une recommandation</button>
                     
+                    <button *ngIf="user.connexion && !user.rejoindreDiscussion" (click)="discussion(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Lancer une discussion instantannée</button>
+
+                    <button *ngIf="user.rejoindreDiscussion && user.connexion " (click)="discussionRejoindre(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Rejoindre une discussion instantannée</button>
+
+                    <p *ngIf="!user.connexion"  class="btn-info btn-lg btn-block mt-3 text-center">{{user.pseudo}} n'est pas en ligne pour lancer une discussion</p>
                 </div>
             </div>
         </div>
