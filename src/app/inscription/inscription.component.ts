@@ -189,7 +189,7 @@ initFormPresentation() {
       formData.append('file',this.selectedFile,newUser.pseudo);
       
       // @ts-ignore: Object is possibly 'null'.
-      this.http.post<any>('https://reseau-social-back.herokuapp.com:3000/file',formData,{responseType: 'text'}).subscribe(
+      this.http.post<any>('https://reseau-social-back.herokuapp.com/file',formData,{responseType: 'text'}).subscribe(
         (res)=> {
           // console.log(res);
           this.socketService.send('new user',newUser);

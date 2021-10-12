@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 })
 export class SocketService {
   socket: any;
-  readonly url: string = "https://reseau-social-back.herokuapp.com:3000"
+  readonly url: string = "https://reseau-social-back.herokuapp.com/"
 
   constructor() {
     this.socket = io(this.url)
