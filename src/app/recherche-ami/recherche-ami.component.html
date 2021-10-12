@@ -16,6 +16,9 @@
                 <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
                 <p>Prénom :{{user.firstName}}</p>
                 <p>Nom : {{user.lastName}}</p>
+                <button *ngIf="droitAdmin === 3" (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3">Voir Profil</button>
+                <button *ngIf="!user.deleteUser && droitAdmin === 3" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" (click)="deleteUser(user)">Supprimer utilisateur</button>
+                <p *ngIf="user.deleteUser && droitAdmin === 3" class="btn btn-success btn-lg btn-block mt-3">utilisateur supprimé</p>
                 <button *ngIf="user.invitation == false" (click)="envoyerUneInvitation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3">Envoyer une invitation</button>
                 <p *ngIf="user.invitation == true" class="btn btn-success btn-lg btn-block mt-3">Invitation envoyée</p>
             </div>

@@ -13,7 +13,10 @@ export class AccueilComponent implements OnInit,OnDestroy {
   connexionNumbers: unknown;
   inscriptionDone: boolean = false;
   connexionDone: boolean = false;
+  nombreInscrits?: number;
+  aProposOn = false;
   
+  nombreInscritsSubscription: Subscription | undefined;
   connexionNumbersSubscription: Subscription | undefined;
   connexionNumbersDisconectSubscription: Subscription | undefined;
   logDisconectSubscription: Subscription | undefined;
@@ -27,8 +30,14 @@ export class AccueilComponent implements OnInit,OnDestroy {
       this.connexionNumbers = data
     
     })
+
     this.connexionNumbersDisconectSubscription = this.socketService.listen('deconnexion').subscribe((data) =>{
       this.connexionNumbers = data
+    })
+
+    this.nombreInscritsSubscription = this.socketService.listen('nombre inscrits').subscribe((data: any) =>{
+      this.nombreInscrits = data.length
+    
     })
      
      this.socketService.send('connexion','demande des users');
@@ -46,10 +55,22 @@ export class AccueilComponent implements OnInit,OnDestroy {
   deconnexion(): void{
     this.userService.userDeco();
   }
+
+  aPropos(): void{
+    this.aProposOn = true;
+  }
+
+  back(): void{
+    this.aProposOn = false;
+  }
+
   ngOnDestroy(): void {
+    this.nombreInscritsSubscription?.unsubscribe
     this.connexionNumbersSubscription?.unsubscribe
     this.connexionNumbersDisconectSubscription?.unsubscribe
     this.logConectSubscription?.unsubscribe
     this.logDisconectSubscription?.unsubscribe
   }
+
+
 }

@@ -16,7 +16,6 @@ export class User {
       public userChat: [],
       public connexion: boolean,
       public socketId: string,
-      public idChat: [{}],
 
     ) {}
   }

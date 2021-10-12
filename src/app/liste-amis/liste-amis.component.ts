@@ -17,6 +17,11 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   resInvitation?: string;
   listeAmisConfDemandeurRecommandation: any;
 
+  
+  rejoindreDiscussionEncoursUser: any;
+  rejoindreDiscussionEncoursNumber = 0;
+  rejoindreDiscussionEncoursOn = false;
+
   listeRecommandationDatas?: any[];
   userRecommandationDemandeur?: string;
   userRecommandationReceveur?: any[];
@@ -24,12 +29,70 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   recommandationUser = false;
   pasDeRecommandation = false;
   user: any;
+  droitAdmin?: number;
+  listeAmisLook = false;
+  listeAmisUser?: any;
+  userListeAmis?: string;
+  allUsersDiscussion = false;
+  AllUsersListe?: any;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
   ngOnInit(): void {
+    // @ts-ignore: Object is possibly 'null'.
+    this.droitAdmin = this.userService.user[0].droit
+    
     this.rechercheAmi()
     this.search()
+  }
+
+  rejoindreConversationUserOn(data: any): void{
+    console.log(data)
+    this.loading = true;
+  const usersRejoindre = data.discussion[0].rejoindreDiscussion
+  const usersRejoindrePseudo: any[] = []
+
+  console.log(usersRejoindre)
+  if(usersRejoindre.length > 0){
+    usersRejoindre.forEach((element: any) => {
+      usersRejoindrePseudo.push(element.pseudoDemandeur)
+    });
+
+console.log(usersRejoindrePseudo)
+    this.socketService.send('recherche user invitation',usersRejoindrePseudo);
+    this.socketService.listenOnce('reponse recherche user invitation').subscribe((data) =>{
+      const users: { pseudo: string; buffer: string;firstName: string;lastName: string;search: boolean;idDiscussion: string}[] =[]
+      // @ts-ignore: Object is possibly 'null'.
+      data.forEach(element => {
+        const pseudo = element.pseudo;
+        const firstName = element.firstName
+        const lastName = element.lastName
+        const buffer = 'data:image/jpeg;base64,' + element.photo;
+        const search = false;
+        let idDiscussion = ""
+        this.rejoindreDiscussionEncoursNumber++
+
+        usersRejoindre.forEach((element: any) => {
+          if(pseudo === element.pseudoDemandeur){
+            idDiscussion = element.idDiscussion
+          }
+        });
+        
+
+          users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,search: search,idDiscussion: idDiscussion})
+      });
+  
+      
+        this.rejoindreDiscussionEncoursUser = users
+        console.log(this.rejoindreDiscussionEncoursUser)
+        this.loading = false;
+    })
+  }
+  else{
+    this.loading = false;
+  }
+
+
   }
 
   search(){
@@ -72,11 +135,10 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
         // @ts-ignore: Object is possibly 'null'.
         this.user = data[0]
 
-  
         this.socketService.send('recherche user invitation',this.listeAmisConfDemandeurRecommandation);
         this.socketService.listenOnce('reponse recherche user invitation').subscribe((data) =>{
           this.resRechercheUsers = data;
-          const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;search: boolean;invitation: boolean;liste: any,connexion: boolean,connexionId: string,discussion:any,rejoindreDiscussion: boolean,discussionConfirmee: boolean,discussionEnCours: any, idDiscussion: string}[] =[]
+          const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;search: boolean;invitation: boolean;liste: any,connexion: boolean,connexionId: string,discussion:any,rejoindreDiscussion: boolean,discussionConfirmee: boolean,discussionEnCours: any, idDiscussion: string, deleteUser: boolean,droitAdmin: number}[] =[]
           // @ts-ignore: Object is possibly 'null'.
           this.resRechercheUsers.forEach(element => {
             const pseudo = element.pseudo;
@@ -88,8 +150,10 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
             const discussion = element.discussion[0]
             const invitation = false;
             const search = false;
+            const deleteUser = false;
             const connexion = element.connexion;
             const connexionId = element.socketId;
+            const droitAdmin = element.droit;
             let rejoindreDiscussion = false;
             let discussionConfirmee = false;
             const discussionEnCours = discussion.discussionEncours[0]
@@ -104,7 +168,6 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
             });
 
             if(discussionEnCours !== undefined){
-              console.log()
               this.user.discussion[0].rejoindreDiscussion.forEach((element: any) => {
                 if(element.pseudoDemandeur === pseudo){
                   rejoindreDiscussion = true;
@@ -112,16 +175,18 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
                 }
               });
             }
-              users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,search: search,invitation: invitation,liste:liste,connexion: connexion,connexionId: connexionId,discussion: discussion, rejoindreDiscussion: rejoindreDiscussion,discussionConfirmee:discussionConfirmee,discussionEnCours: discussionEnCours, idDiscussion: idDiscussion})
+              users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,search: search,invitation: invitation,liste:liste,connexion: connexion,connexionId: connexionId,discussion: discussion, rejoindreDiscussion: rejoindreDiscussion,discussionConfirmee:discussionConfirmee,discussionEnCours: discussionEnCours, idDiscussion: idDiscussion, deleteUser: deleteUser,droitAdmin: droitAdmin})
           });
 
             
             this.loading = false;
+            this.rejoindreConversationUserOn(this.user)
             this.users = users
             console.log(users)
         })
       })
     }
+    
   }
 
   recommandation(dataUser:any): void{
@@ -183,7 +248,6 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   profilUser(dataUser:any): void{
     console.log(dataUser)
     this.router.navigate(['/profil/' + dataUser.pseudo])
- 
   }
 
   discussion(dataUser:any): void{
@@ -192,11 +256,13 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
       // @ts-ignore: Object is possibly 'null'.
       mail: this.userService.user[0].email,
       // @ts-ignore: Object is possibly 'null'.
-      pseudo: this.userService.user[0].pseudo
+      pseudo: this.userService.user[0].pseudo,
+      droit: this.droitAdmin
     }
     const receveur = {
       mail: dataUser.email,
-      pseudo: dataUser.pseudo
+      pseudo: dataUser.pseudo,
+      droit: dataUser.droitAdmin
     }
 
     if(dataUser.discussionConfirmee){
@@ -269,14 +335,207 @@ const pseudoReceveur =  this.userService.user[0].pseudo
   }
 
   back():void {
+    this.listeAmisLook = false;
+    this.allUsersDiscussion = false;
+    this.rejoindreDiscussionEncoursOn = false;
+    clearInterval(this.intervalId)
     this.recommandationUser =false;
     this.loading = false;
-    this.rechercheAmi()
     this.listeRecommandationDatas = []
     this.pasDeRecommandation = false;
     this.search()
   }
 
+  deleteUser(user: any){
+    user.deleteUser = true;
+    this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
+    this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
+      console.log(data)
+    })
+  }
+
+
+searchAmis(){
+    return new Promise(
+      (resolve, reject) => {
+       this.intervalId = setInterval(
+          () => {
+            if(this.listeAmisLook){
+          // @ts-ignore: Object is possibly 'null'.
+          let pseudo = (<HTMLInputElement>document.getElementById('serchUserAmis')?.value)
+          this.listeAmisUser.forEach((element: { pseudo: HTMLInputElement[]; search: boolean; }) => {
+            if( element.pseudo.indexOf(pseudo) == -1){
+              element.search = true
+            }
+            else{
+              element.search = false;
+            }
+          })
+          }
+        }, 50
+        );
+      }
+    );
+  }
+
+listeAmis(user: any): void{
+  this.userListeAmis = user.pseudo
+  clearInterval(this.intervalId)
+  this.listeAmisLook = true;
+  this.loading = true;
+  this.socketService.send('liste amis user',this.userListeAmis);
+    this.socketService.listenOnce('reponse liste amis user').subscribe((data: any) =>{
+
+      if(data[0].listeUser[0].listeAmisConfirmées){
+        const array = data[0].listeUser[0].listeAmisConfirmées
+        console.log(array)
+  
+        const index = array.indexOf(this.userRecommandationDemandeur);
+        if (index > -1) {
+          array.splice(index, 1);
+        }
+  
+        this.socketService.send('recherche user invitation',array);
+        this.socketService.listenOnce('reponse recherche user invitation').subscribe((data: any) =>{
+          const userListe: { pseudo: any; firstName: any; lastName: any; buffer: string; email: any; liste: any; search: boolean; }[] = []
+  
+          data.forEach((element: { pseudo: any; firstName: any; lastName: any; buffer:string, photo: string; email: any; listeUser: any[]; }) => {
+            const pseudo = element.pseudo;
+            const firstName = element.firstName
+            const lastName = element.lastName
+            const buffer = 'data:image/jpeg;base64,' + element.photo;
+            const email = element.email
+            const liste = element.listeUser[0]
+            let search = false;
+  
+            userListe.push({pseudo: pseudo,firstName: firstName,lastName: lastName,buffer: buffer,email:email,liste:liste,search:search})
+          })
+          this.searchAmis()
+          this.listeAmisUser = userListe;
+          this.loading = false;
+          
+        })
+      }
+
+    })
+}
+
+suppListeAmis(pseudo: string):void{
+  this.socketService.send('supprimer liste amis user',{demandeur: this.userRecommandationDemandeur,receveur: pseudo});
+      this.socketService.listenOnce('reponse supprimer liste amis user').subscribe((data: any) =>{
+        this.rechercheAmi()
+      })
+}
+
+suppListeAmisUser(pseudo: string):void{
+  this.socketService.send('supprimer liste amis user',{demandeur: this.userListeAmis,receveur: pseudo});
+      this.socketService.listenOnce('reponse supprimer liste amis user').subscribe((data: any) =>{
+        this.listeAmis({pseudo: this.userListeAmis})
+      })
+}
+
+searchDiscussion(){
+  return new Promise(
+    (resolve, reject) => {
+     this.intervalId = setInterval(
+        () => {
+          if(this.AllUsersListe){
+        // @ts-ignore: Object is possibly 'null'.
+        let pseudo = (<HTMLInputElement>document.getElementById('serchUserAmisDiscussion')?.value)
+        this.AllUsersListe.forEach((element: { pseudo: HTMLInputElement[]; search: boolean; }) => {
+          if( element.pseudo.indexOf(pseudo) == -1){
+            element.search = true
+          }
+          else{
+            element.search = false;
+          }
+        })
+        }
+      }, 50
+      );
+    }
+  );
+}
+
+AllUsersListeOn(): void{
+  clearInterval(this.intervalId)
+  this.allUsersDiscussion = true;
+  this.loading = true;
+  this.socketService.send('liste users admin',this.userRecommandationDemandeur);
+    this.socketService.listenOnce('reponse liste users admin').subscribe((data: any) =>{
+
+      const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;search: boolean;invitation: boolean;liste: any,connexion: boolean,connexionId: string,discussion:any,rejoindreDiscussion: boolean,discussionConfirmee: boolean,discussionEnCours: any, idDiscussion: string, deleteUser: boolean,droitAdmin: number}[] =[]
+
+      data.forEach((element: { pseudo: any; firstName: any; lastName: any; photo: string; email: any; listeUser: any[]; discussion: any[]; connexion: any; socketId: any; droit: any; }) => {
+        const pseudo = element.pseudo;
+        const firstName = element.firstName
+        const lastName = element.lastName
+        const buffer = 'data:image/jpeg;base64,' + element.photo;
+        const email = element.email
+        const liste = element.listeUser[0]
+        const discussion = element.discussion[0]
+        const invitation = false;
+        const search = false;
+        const deleteUser = false;
+        const connexion = element.connexion;
+        const connexionId = element.socketId;
+        const droitAdmin = element.droit;
+        let rejoindreDiscussion = false;
+        let discussionConfirmee = false;
+        const discussionEnCours = discussion.discussionEncours[0]
+        let idDiscussion = "";
+        
+        discussion.DiscussionConfirmées.forEach((element: any) => {
+          if(element.pseudo === this.userRecommandationDemandeur){
+            discussionConfirmee = true;
+            idDiscussion = element.idDiscussion
+          }
+        });
+
+        if(discussionEnCours !== undefined){
+          this.user.discussion[0].rejoindreDiscussion.forEach((element: any) => {
+            if(element.pseudoDemandeur === pseudo){
+              rejoindreDiscussion = true;
+              idDiscussion = element.idDiscussion
+            }
+          });
+        }
+          users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,search: search,invitation: invitation,liste:liste,connexion: connexion,connexionId: connexionId,discussion: discussion, rejoindreDiscussion: rejoindreDiscussion,discussionConfirmee:discussionConfirmee,discussionEnCours: discussionEnCours, idDiscussion: idDiscussion, deleteUser: deleteUser,droitAdmin: droitAdmin})
+      });
+          this.AllUsersListe = users
+          this.loading = false;
+          this.searchDiscussion()
+    })
+}
+
+serchUserAmisDiscussionRejoindre(){
+  return new Promise(
+    (resolve, reject) => {
+     this.intervalId = setInterval(
+        () => {
+          if(this.rejoindreDiscussionEncoursUser){
+        // @ts-ignore: Object is possibly 'null'.
+        let pseudo = (<HTMLInputElement>document.getElementById('serchUserAmisDiscussionRejoindre')?.value)
+        this.rejoindreDiscussionEncoursUser.forEach((element: { pseudo: HTMLInputElement[]; search: boolean; }) => {
+          if( element.pseudo.indexOf(pseudo) == -1){
+            element.search = true
+          }
+          else{
+            element.search = false;
+          }
+        })
+        }
+      }, 50
+      );
+    }
+  );
+}
+
+rejoindreDisussion():void{
+  clearInterval(this.intervalId)
+  this.rejoindreDiscussionEncoursOn = true;
+  this.serchUserAmisDiscussionRejoindre()
+}
 
   ngOnDestroy(): void {
     clearInterval(this.intervalId)

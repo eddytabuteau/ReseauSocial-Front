@@ -1,31 +1,40 @@
-<div class="center">
-    <div class="position-relative">
-        <a [routerLink]="['/connexion']" *ngIf="!connexionDone">
-            <button type="button" class="btn btn-outline-primary btn-lg btn-block">Connexion</button>
-        </a>
-        <a [routerLink]="['/inscription']" *ngIf="!inscriptionDone">
-            <button type="button" class="btn btn-outline-primary btn-lg btn-block">Inscription</button>
-        </a>
-        <a *ngIf="connexionDone" (click)="deconnexion()">
-            <button type="button" class="btn btn-outline-danger btn-lg btn-block">Deconnexion</button>
-        </a>
-        
-    </div>
-</div>
-<div class="text-center d-flex justify-content-around flex-wrap mt-5">
-    <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
-        <div class="card-body text-primary">
-            <h5 class="card-title">Message publiés</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.<p>
+<div *ngIf="!aProposOn">
+    <div class="center">
+        <div class="position-relative">
+            <a [routerLink]="['/connexion']" *ngIf="!connexionDone">
+                <button type="button" class="btn btn-outline-primary btn-lg btn-block">Connexion</button>
+            </a>
+            <a [routerLink]="['/inscription']" *ngIf="!inscriptionDone">
+                <button type="button" class="btn btn-outline-primary btn-lg btn-block">Inscription</button>
+            </a>
+            <a *ngIf="connexionDone" (click)="deconnexion()">
+                <button type="button" class="btn btn-outline-danger btn-lg btn-block">Deconnexion</button>
+            </a>
+            
         </div>
     </div>
-    <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
-        <div class="card-body text-primary">
-            <h5 class="card-title">Utilisateurs connectés</h5>
-            <p class="card-text">{{connexionNumbers}}<p>
+    <div class="text-center d-flex justify-content-around flex-wrap mt-5">
+        <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Nombre de membres</h5>
+                <p class="card-text">{{nombreInscrits}}<p>
+            </div>
+        </div>
+        <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title">Utilisateurs connectés</h5>
+                <p class="card-text">{{connexionNumbers}}<p>
+            </div>
         </div>
     </div>
-</div>
-<div class="text-center d-flex justify-content-center mt-5">
-    <button type="button" class="btn btn-outline-primary btn-lg btn-block">A propos</button>
+    <div class="text-center d-flex justify-content-center mt-5">
+        <button type="button" class="btn btn-outline-primary btn-lg btn-block" (click)="aPropos()">A propos</button>
+    </div>
+</div>  
+
+<div *ngIf="aProposOn">
+    <div class="text-center">
+        <span class="muted cursor text-center" (click)="back()" style="font-size: large;cursor: pointer;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour</span>
+    </div>
+    <app-a-propos></app-a-propos>
 </div>

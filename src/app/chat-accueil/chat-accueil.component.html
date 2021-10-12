@@ -17,7 +17,7 @@
         <p>Discussion lancée par {{chat.pseudoCreation}}</p>
         <div>
             <button class="btn btn-primary" (click)="chatLog(chat)">Accéder à la discussion</button>
-            <button *ngIf="user.pseudo === chat.pseudoCreation" class="btn btn-warning" (click)="supp(chat)">Supprimer</button>
+            <button *ngIf="user.pseudo === chat.pseudoCreation || droitAdmin === 3" class="btn btn-warning" (click)="supp(chat)">Supprimer</button>
         </div>
     </div>
 </div>

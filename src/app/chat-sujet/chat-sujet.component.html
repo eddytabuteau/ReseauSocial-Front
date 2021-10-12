@@ -18,7 +18,7 @@
                 </div>
                 <p class="text-center mb-4" style="font-size: 1.6rem;font-weight: bold;">{{message.message}}</p>
                 <p>Posté le : {{message.date | date: 'fullDate' : 'UTC+2' : 'fr'}}</p>
-                <div *ngIf="user.pseudo === message.pseudoCreation">
+                <div *ngIf="user.pseudo === message.pseudoCreation || droitAdmin === 3">
                     <button class="btn btn-warning"(click)="supp(message)">Supprimer</button>
                 </div>
             </div>

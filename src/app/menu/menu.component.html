@@ -17,7 +17,7 @@
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'InvitationsEnCours', 'onFocus': focus == 'InvitationsEnCours'}" (click)="onFocus('InvitationsEnCours')" [routerLink]="['/invitation-en-cours']">Invitations en cours</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'InvitationsAttenteConfirmation', 'onFocus': focus == 'InvitationsAttenteConfirmation'}" (click)="onFocus('InvitationsAttenteConfirmation')" [routerLink]="['/invitation-attente-confirmation']">Invitations en attente de confirmation</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'listeRecommandation', 'onFocus': focus == 'listeRecommandation'}" (click)="onFocus('listeRecommandation')" [routerLink]="['/recommandation']">Liste recommandation</a>
-          <a class="nav-link" [ngClass]="{'offFocus': focus != 'admin', 'onFocus': focus == 'admin'}" (click)="onFocus('admin')" href="#">Admin</a>
+          <a class="nav-link" *ngIf="droitAdmin === 3" [ngClass]="{'offFocus': focus != 'admin', 'onFocus': focus == 'admin'}" (click)="onFocus('admin')" [routerLink]="['/admin']">Admin</a>
           <a class="nav-link" [ngClass]="{'offFocus': focus != 'deconnexion', 'onFocus': focus == 'deconnexion'}" (click)="deconnexion()" [routerLink]="['/']">Déconnexion</a>
         </div>
       </div>

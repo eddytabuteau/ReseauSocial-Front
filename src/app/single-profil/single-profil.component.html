@@ -6,10 +6,19 @@
         <div class="card border-primary">
             <div>
                 <div class="container">
+                    <div class="text-end" *ngIf="user?.droit === 3 || userProfilData.pseudo === user?.pseudo">
+                            <button *ngIf="!presentationUpdate" class="btn btn-primary" (click)="updateProfil()">Modifier le profil</button>
+                            <button *ngIf="presentationUpdate" type="button" class="btn btn-outline-primary btn-lg btn-block" (click)="updateProfilDone()">Valider la modification</button>
+                    </div>
+                    <p class="text-center" *ngIf="textUpdateError" style="color: red;">*La présentation ne doit pas être vide</p>
                     <div class="row">
-                        <img [src]="userProfilData.photo" alt="photoProfil" class="photoUser mt-2 col-6">
+                        <img [src]="userProfilData.photo" alt="photoProfil" class="photoUser mt-2 col-6" id="photoProfil">
                         <p class="col-6 pseudoUser">{{userProfilData.pseudo}}</p>
                     </div>
+                    <div *ngIf="presentationUpdate">
+                        <input type="file" id="photo" accept=".jpg, .jpeg, .png" (change)="uploadAvatar($event)">
+                        <label for="photo" class="updatePhoto" (click)="testUpdateAvatar()">Modifier la photo</label>
+                      </div>
                     <div class="text-center">
                         <p>Prénom : {{userProfilData.firstName}}</p>
                         <p>Nom : {{userProfilData.lastName}}</p>
@@ -18,8 +27,8 @@
                         <p>Genre : {{userProfilData.gender}}</p>
                         <div class="border-primary mb-2 presentationIuser">
                             <p>Présentation :</p>
-                            <p>{{userProfilData.presentation}}</p>
-                        </div>
+                            <textarea rows="4" [disabled]="!presentationUpdate" [(ngModel)]="textPresentation" class="form-control"></textarea>
+                          </div>
                     </div>
 
                 </div>
@@ -42,7 +51,7 @@
                     <p>Posté le : {{post.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
                     <div>
                         <button class="btn btn-primary"(click)="commentaire(post)">Voir les commentaires</button>
-                        <button class="btn btn-warning"(click)="supp(post)">Supprimer</button>
+                        <button *ngIf="user?.droit === 3 || post.pseudoCreation === user?.pseudo || id === user?.pseudo" class="btn btn-warning"(click)="supp(post)">Supprimer</button>
                     </div>
                 </div>
             </div>
@@ -64,7 +73,10 @@
                     <span class="pseudoUser" style="margin-left: 2%;">{{commentaire.pseudoCreation}}</span>
             </div>
             <p class="text-center mb-4">{{commentaire.commentaire}}</p>
-            <p>Posté le : {{commentaire.date | date: 'fullDate' : 'UTC+2' : 'fr'}}</p>
+            <p>Posté le : {{commentaire.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
+            <div>
+                <button *ngIf="user?.droit === 3 || commentaire.pseudoCreation === user?.pseudo || id === user?.pseudo" class="btn btn-warning"(click)="suppCommentaire(commentaire)">Supprimer</button>
+            </div>
         </div>
     </div>
 </div>

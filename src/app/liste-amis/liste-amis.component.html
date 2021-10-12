@@ -1,48 +1,161 @@
-<div *ngIf="!recommandationUser">
-    <div class="input-group mb-3 " style="width: 20%;margin: auto;margin-top: 1%;">
-        <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUser">
-    </div>
+<div *ngIf="loading">
+    <app-loading-spinner></app-loading-spinner>
+</div>
 
-    <div *ngIf="loading">
-        <app-loading-spinner></app-loading-spinner>
+<div *ngIf="droitAdmin === 3 && !allUsersDiscussion">
+    <div class="text-center d-flex justify-content-center mt-5" (click)="AllUsersListeOn()">
+        <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title" >Lancer une conversation avec n'importe quel utilisateur</h5>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div *ngFor="let user of users" style="width: 45%;margin: auto;margin-top: 3%;">
-        <div *ngIf="user.search == false" class="card border-primary" >
-            <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
-                <div>
-                    <img [src]="user.buffer" alt="photo" class="photo">
+<div *ngIf="rejoindreDiscussionEncoursNumber > 0 && !rejoindreDiscussionEncoursOn">
+    <div class="text-center d-flex justify-content-center mt-5" (click)="rejoindreDisussion()">
+        <div class="card border-primary mb-3 colIndex" style="max-width: 18rem;">
+            <div class="card-body text-primary">
+                <h5 class="card-title" >Conversation en attente : {{rejoindreDiscussionEncoursNumber}}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!allUsersDiscussion && !rejoindreDiscussionEncoursOn">
+    <div *ngIf="!recommandationUser && !listeAmisLook">
+        <div class="input-group mb-3 " style="width: 20%;margin: auto;margin-top: 1%;">
+            <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUser">
+        </div>
+
+        
+
+        <div *ngFor="let user of users" style="width: 45%;margin: auto;margin-top: 3%;">
+            <div *ngIf="user.search == false" class="card border-primary" >
+                <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
+                    <div>
+                        <img [src]="user.buffer" alt="photo" class="photo">
+                    </div>
+                    <div class="mt-3">
+                        <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
+                        <p>Prénom :{{user.firstName}}</p>
+                        <p>Nom : {{user.lastName}}</p>
+                        <button  (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Voir le profil</button>
+                        <button *ngIf="!user.deleteUser && droitAdmin === 3" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" (click)="deleteUser(user)">Supprimer utilisateur</button>
+                        <p *ngIf="user.deleteUser && droitAdmin === 3" class="btn btn-success btn-lg btn-block mt-3">utilisateur supprimé</p>
+                        <button (click)="recommandation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Proposé une recommandation</button>
+
+                        <button (click)="listeAmis(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Voir liste d'amis</button>
+                        <button (click)="suppListeAmis(user.pseudo)" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3" style="display: inherit;">Supprimé de la liste d'amis</button>
+                        
+                        <button *ngIf="user.connexion && !user.rejoindreDiscussion" (click)="discussion(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Lancer une discussion instantannée</button>
+
+                        <button *ngIf="user.rejoindreDiscussion && user.connexion " (click)="discussionRejoindre(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Rejoindre une discussion instantannée</button>
+
+                        <p *ngIf="!user.connexion"  class="btn-info btn-lg btn-block mt-3 text-center">{{user.pseudo}} n'est pas en ligne pour lancer une discussion</p>
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
-                    <p>Prénom :{{user.firstName}}</p>
-                    <p>Nom : {{user.lastName}}</p>
-                    <button  (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Voir le profil</button>
-                    <button (click)="recommandation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Proposé une recommandation</button>
-                    
-                    <button *ngIf="user.connexion && !user.rejoindreDiscussion" (click)="discussion(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Lancer une discussion instantannée</button>
+            </div>
+        </div>
+    </div>
 
-                    <button *ngIf="user.rejoindreDiscussion && user.connexion " (click)="discussionRejoindre(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Rejoindre une discussion instantannée</button>
+    <div *ngIf="recommandationUser" class="recommandation">
+        <h1 class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Sélectionner les amis à recommander à {{pseudoRecommandationReceveur}}</h1>
+        <div class="text-center">
+            <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour à ma liste d'amis</span>
+        </div>
+        <div class="input-group mb-3 " style="width: 20%;margin: auto;padding-top: 1%;">
+            <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserReco">
+        </div>
 
-                    <p *ngIf="!user.connexion"  class="btn-info btn-lg btn-block mt-3 text-center">{{user.pseudo}} n'est pas en ligne pour lancer une discussion</p>
+        <p *ngIf="pasDeRecommandation" class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Pas de recommandation à faire pour {{pseudoRecommandationReceveur}}</p>
+
+        <div *ngFor="let user of listeRecommandationDatas" style="width: 45%;margin: auto;padding-top: 3%;">
+            <div *ngIf="user.search == false" class="card border-primary" >
+                <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
+                    <div>
+                        <img [src]="user.buffer" alt="photo" class="photo">
+                    </div>
+                    <div class="mt-3">
+                        <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
+                        <p>Prénom :{{user.firstName}}</p>
+                        <p>Nom : {{user.lastName}}</p>
+                        <button *ngIf="user.invitation == false" (click)="envoyerRecommandation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Envoyer recommandation à {{pseudoRecommandationReceveur}}</button>
+                        <p *ngIf="user.invitation == true" class="btn btn-info btn-lg btn-block mt-3">Recommandation envoyée</p>
+                        
+                    </div>
+                </div>
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="listeAmisLook">
+        <h1 class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Liste d'amis de {{userListeAmis}}</h1>
+        <div class="text-center">
+            <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour à ma liste d'amis</span>
+        </div>
+        <div class="input-group mb-3 " style="width: 20%;margin: auto;padding-top: 1%;">
+            <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserAmis">
+        </div>
+
+
+        <div *ngFor="let user of listeAmisUser" style="width: 45%;margin: auto;padding-top: 3%;">
+            <div *ngIf="user.search == false" class="card border-primary" >
+                <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
+                    <div>
+                        <img [src]="user.buffer" alt="photo" class="photo">
+                    </div>
+                    <div class="mt-3">
+                        <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
+                        <p>Prénom :{{user.firstName}}</p>
+                        <p>Nom : {{user.lastName}}</p>  
+                        <button (click)="listeAmis(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Voir liste d'amis</button>
+                        <button *ngIf="droitAdmin === 3" (click)="suppListeAmisUser(user.pseudo)" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3" style="display: inherit;">Supprimé de la liste d'amis de {{userListeAmis}}</button>           
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div *ngIf="recommandationUser" class="recommandation">
-    <h1 class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Sélectionner les amis à recommander à {{pseudoRecommandationReceveur}}</h1>
+<div *ngIf="allUsersDiscussion">
+        <div class="text-center">
+            <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour à ma liste d'amis</span>
+        </div>
+        <div class="input-group mb-3 " style="width: 20%;margin: auto;padding-top: 1%;">
+            <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserAmisDiscussion">
+        </div>
+
+
+        <div *ngFor="let user of AllUsersListe" style="width: 45%;margin: auto;padding-top: 3%;">
+            <div *ngIf="user.search == false" class="card border-primary" >
+                <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
+                    <div>
+                        <img [src]="user.buffer" alt="photo" class="photo">
+                    </div>
+                    <div class="mt-3">
+                        <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
+                        <p>Prénom :{{user.firstName}}</p>
+                        <p>Nom : {{user.lastName}}</p>  
+                        <button *ngIf="user.connexion" (click)="discussion(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Lancer une discussion instantannée</button> 
+                        <p *ngIf="!user.connexion"  class="btn-info btn-lg btn-block mt-3 text-center">{{user.pseudo}} n'est pas en ligne pour lancer une discussion</p>     
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<div *ngIf="rejoindreDiscussionEncoursOn">
     <div class="text-center">
         <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour à ma liste d'amis</span>
     </div>
     <div class="input-group mb-3 " style="width: 20%;margin: auto;padding-top: 1%;">
-        <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserReco">
+        <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserAmisDiscussionRejoindre">
     </div>
 
-    <p *ngIf="pasDeRecommandation" class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Pas de recommandation à faire pour {{pseudoRecommandationReceveur}}</p>
 
-    <div *ngFor="let user of listeRecommandationDatas" style="width: 45%;margin: auto;padding-top: 3%;">
+    <div *ngFor="let user of rejoindreDiscussionEncoursUser" style="width: 45%;margin: auto;padding-top: 3%;">
         <div *ngIf="user.search == false" class="card border-primary" >
             <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
                 <div>
@@ -51,13 +164,10 @@
                 <div class="mt-3">
                     <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
                     <p>Prénom :{{user.firstName}}</p>
-                    <p>Nom : {{user.lastName}}</p>
-                    <button *ngIf="user.invitation == false" (click)="envoyerRecommandation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Envoyer recommandation à {{pseudoRecommandationReceveur}}</button>
-                    <p *ngIf="user.invitation == true" class="btn btn-info btn-lg btn-block mt-3">Recommandation envoyée</p>
-                    
+                    <p>Nom : {{user.lastName}}</p>  
+                    <button (click)="discussionRejoindre(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" style="display: inherit;">Rejoindre une discussion instantannée</button>  
                 </div>
             </div>
-            <p></p>
         </div>
     </div>
 </div>

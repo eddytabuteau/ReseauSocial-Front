@@ -30,6 +30,12 @@ import { OrderbyPipe } from './orderby.pipe';
 import { ChatCreationComponent } from './chat-creation/chat-creation.component';
 import { ChatAccueilComponent } from './chat-accueil/chat-accueil.component';
 import { ChatSujetComponent } from './chat-sujet/chat-sujet.component';
+import { NotFoundComponent } from './admin/not-found/not-found.component';
+import { AdminComponent } from './admin/admin.component';
+import { ListeUserComponent } from './admin/liste-user/liste-user.component';
+import { ListeMessageProfilComponent } from './admin/liste-message-profil/liste-message-profil.component';
+import { ListeDiscussionComponent } from './admin/liste-discussion/liste-discussion.component';
+import { AProposComponent } from './a-propos/a-propos.component';
 
 
 @NgModule({
@@ -54,7 +60,13 @@ import { ChatSujetComponent } from './chat-sujet/chat-sujet.component';
     OrderbyPipe,
     ChatCreationComponent,
     ChatAccueilComponent,
-    ChatSujetComponent
+    ChatSujetComponent,
+    NotFoundComponent,
+    AdminComponent,
+    ListeUserComponent,
+    ListeMessageProfilComponent,
+    ListeDiscussionComponent,
+    AProposComponent
   ],
   imports: [
     BrowserModule,

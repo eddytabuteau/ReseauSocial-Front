@@ -13,6 +13,7 @@ export class MenuComponent implements OnInit,OnDestroy {
   focus:string | undefined
   id?: string;
   dataLog?: boolean;
+  droitAdmin?: number;
 
   logConectSubscription: Subscription | undefined;
   userSubscription: Subscription | undefined;
@@ -24,7 +25,11 @@ export class MenuComponent implements OnInit,OnDestroy {
       this.dataLog = data;
     })
     this.userSubscription = this.userService.PostServiceSubject.subscribe((data)=>{
-      this.id = data[0].pseudo
+      if(data.length !== 0){
+        this.id = data[0].pseudo
+        this.droitAdmin = data[0].droit
+      }
+      
     })
     
     

@@ -17,12 +17,15 @@ export class ChatSujetComponent implements OnInit, OnDestroy {
   idChat?: string;
   user: any;
   chatSubscription: Subscription | undefined;
+  droitAdmin?: number;
 
   constructor(private route: ActivatedRoute,private userService: UserService, private router: Router, private socketService: SocketService) { }
 
   ngOnInit(): void {
     // @ts-ignore: Object is possibly 'null'.
     this.user = this.userService.user[0]
+    // @ts-ignore: Object is possibly 'null'.
+    this.droitAdmin = this.userService.user[0].droit
 
     this.searchData()
     

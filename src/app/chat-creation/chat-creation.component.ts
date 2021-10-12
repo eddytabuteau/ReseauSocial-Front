@@ -12,7 +12,7 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
 
   loading:boolean = false;
   pseudoUser?: string;
-  droitUser?: string;
+  droitUser?: number;
   listeAmisUser: any;
   users: any;
   sujetChat = "";
@@ -25,6 +25,10 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
   ngOnInit(): void {
+    // @ts-ignore: Object is possibly 'null'.
+    this.droitUser = this.userService.user[0].droit
+     // @ts-ignore: Object is possibly 'null'.
+     this.pseudoUser = this.userService.user[0].pseudo
     this.listeAmis()
     this.search()
   }
@@ -48,15 +52,38 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
 
   listeAmis(): void{
     this.loading = false;
-      // @ts-ignore: Object is possibly 'null'.
-      this.pseudoUser = this.userService.user[0].pseudo
-      // @ts-ignore: Object is possibly 'null'.
-      this.droitUser = this.userService.user[0].droit
-  
+
+    if(this.droitUser === 3){
+      this.socketService.send('liste users admin',this.pseudoUser);
+      this.socketService.listenOnce('reponse liste users admin').subscribe((data: any) =>{
+        const allPseudo: any[] = []
+        data.forEach((element: any) => {
+          allPseudo.push(element.pseudo)
+        });
+
+        const index = allPseudo.indexOf(this.pseudoUser);
+        if (index > -1) {
+          allPseudo.splice(index, 1);
+        }
+        this.listeAmisUser = allPseudo
+        this.invitations()
+      })
+    }
+    else{
       this.socketService.send('updateDataUser',this.pseudoUser);
       this.socketService.listenOnce('reponse updateDataUser').subscribe((data: any) =>{
         this.listeAmisUser = data[0].listeUser[0].listeAmisConfirmées
+        this.invitations()
+      })
+    }
+      
+        
 
+  
+
+};
+
+  invitations():void{
         this.socketService.send('recherche user invitation',this.listeAmisUser);
         this.socketService.listenOnce('reponse recherche user invitation').subscribe((data:any) =>{
           const users: { pseudo: any; photo: any; participant: boolean; }[] = []
@@ -74,11 +101,7 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
           console.log(this.users)
           
         })
-
-  })
-
-};
-
+  }
   back(): void{
     this.router.navigate(['/chat-accueil/'])
   }

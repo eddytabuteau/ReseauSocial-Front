@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { HttpClient } from '@angular/common/http';
 registerLocaleData(localeFr, 'fr');
 
 @Component({
@@ -23,8 +24,14 @@ export class SingleProfilComponent implements OnInit {
   commantaires: boolean = false;
   messageProfilCommentaires?:any;
   idMessage?: string;
+  presentationUpdate = false;
+  textPresentation = ""
+  textUpdateError = false;
+  selectedFile: any;
+  avatarDone = false;
+  id?: string;
 
-  constructor(private route: ActivatedRoute, private socketService: SocketService,private userService: UserService,) { }
+  constructor(private route: ActivatedRoute, private socketService: SocketService,private userService: UserService,private http: HttpClient) { }
 
   ngOnInit(): void {
     this.profil()
@@ -42,8 +49,8 @@ export class SingleProfilComponent implements OnInit {
       }
     }
     
-    const pseudoUser: string = this.route.snapshot.params['id'];
-    this.socketService.send('updateDataUser',pseudoUser);
+    this.id = this.route.snapshot.params['id'];
+    this.socketService.send('updateDataUser',this.id);
     this.socketService.listenOnce('reponse updateDataUser').subscribe((data) =>{
       // @ts-ignore: Object is possibly 'null'.
     const reponse = data[0]
@@ -62,6 +69,7 @@ export class SingleProfilComponent implements OnInit {
     }
     const message = reponse.messageProfil.reverse()
     this.messageProfil = message
+    this.textPresentation = this.userProfilData.presentation
     this.loading = true;
     console.log(this.userProfilData)
 
@@ -95,11 +103,11 @@ export class SingleProfilComponent implements OnInit {
     
     this.socketService.send('commentaire update',this.idMessage);
     this.socketService.listenOnce('reponse commentaire update').subscribe((data) =>{
+      console.log(data)
       this.messageProfilCommentaires = data
       this.loading = true;
       this.commantaires = true;
     })
-    console.log(this.messageProfilCommentaires)
   }
 
   sendCommentaire(texte:string): void{
@@ -139,6 +147,77 @@ export class SingleProfilComponent implements OnInit {
     this.socketService.send('supprimer message profil',{idMessage:post.idMessage,pseudo:post.profilDestination});
     this.socketService.listenOnce('reponse supprimer message profil').subscribe((data) =>{
       this.profil();
+    })
+  }
+
+  updateProfil(): void {
+    this.presentationUpdate = true;
+  }
+
+  updateProfilDone(): void {
+
+    if(this.textPresentation === ""){
+      this.textUpdateError =true
+    }
+    else{
+      this.textUpdateError =false;
+      this.presentationUpdate = false;
+      this.socketService.send('update profil',{pseudo: this.userProfilData?.pseudo,text: this.textPresentation});
+
+      if(this.avatarDone){
+        this.avatarDone = false;
+
+        const formData = new FormData();
+        formData.append('file',this.selectedFile,this.userProfilData?.pseudo);
+
+        // @ts-ignore: Object is possibly 'null'.
+      this.http.post<any>('https://reseau-social-front.herokuapp.com:3000/file-Update',formData,{responseType: 'text'}).subscribe(
+        (res)=> {
+        console.log(res);
+        },
+        (err) => console.log(err)
+      );
+      }
+      
+    }
+  }
+
+  testUpdateAvatar(){
+    const inpFile = (<HTMLInputElement>document.getElementById('photo'))
+    const testPhoto = (<HTMLInputElement>document.getElementById('photoProfil'))
+
+    
+    inpFile.addEventListener('change',function(){
+    // @ts-ignore: Object is possibly 'null'.
+    let file = (<HTMLInputElement>document.getElementById('photo')).files[0];
+    //console.log(file)
+
+
+    const reader = new FileReader()
+    reader.addEventListener('load',function(){
+      // @ts-ignore: Object is possibly 'null'.
+      testPhoto.setAttribute("src", this.result);
+      testPhoto.setAttribute("alt","photo de Profil")
+    })
+    reader.readAsDataURL(file)
+    })
+  }
+  uploadAvatar(event: any){
+    // @ts-ignore: Object is possibly 'null'.
+    let file = (<HTMLInputElement>document.getElementById('photo')).files[0];
+    this.selectedFile = file
+    this.avatarDone = true;
+  }
+
+  suppCommentaire(commentaire: any): void{
+    this.loading = false;
+    this.socketService.send('supprimer commentaire profil',commentaire._id);
+    this.socketService.listenOnce('reponse supprimer commentaire profil').subscribe((data) =>{
+      this.socketService.send('commentaire update',this.idMessage);
+      this.socketService.listenOnce('reponse commentaire update').subscribe((data) =>{
+        this.messageProfilCommentaires = data
+        this.loading = true;
+      })
     })
   }
 }

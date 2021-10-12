@@ -14,10 +14,13 @@ export class RechercheAmiComponent implements OnInit, OnDestroy {
   resRechercheUsers: unknown
   intervalId?: any
   loading:boolean = false;
+  droitAdmin?: number;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
   ngOnInit(): void {
+    // @ts-ignore: Object is possibly 'null'.
+    this.droitAdmin = this.userService.user[0].droit
     this.rechercheAmi()
     this.search()
   }
@@ -39,7 +42,7 @@ export class RechercheAmiComponent implements OnInit, OnDestroy {
       this.socketService.send('recherche user',{pseudoDemandeur:pseudoDemandeur,listeUserDemandeur:listeUserDemandeur });
       this.socketService.listenOnce('reponse recherche user').subscribe((data) =>{
         this.resRechercheUsers = data;
-        const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;invitation: boolean; search: boolean}[] =[]
+        const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;invitation: boolean; search: boolean,deleteUser: boolean}[] =[]
         // @ts-ignore: Object is possibly 'null'.
         this.resRechercheUsers.forEach(element => {
           const pseudo = element.pseudo;
@@ -49,7 +52,8 @@ export class RechercheAmiComponent implements OnInit, OnDestroy {
           const email = element.email
           const invitation = false;
           const search = false;
-            users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,invitation: invitation,search: search})
+          const deleteUser = false;
+            users.push({pseudo: pseudo,buffer: buffer, firstName: firstName,lastName: lastName,email: email,invitation: invitation,search: search,deleteUser: deleteUser})
           });
           this.loading = false;
           this.users = users
@@ -91,6 +95,19 @@ export class RechercheAmiComponent implements OnInit, OnDestroy {
         this.socketService.send('invitation user',{dataUser:dataUser,dateUserDemendeur:this.userService.user[0].pseudo});
       }
     });
+  }
+
+  profilUser(dataUser:any): void{
+    console.log(dataUser)
+    this.router.navigate(['/profil/' + dataUser.pseudo])
+  }
+  
+  deleteUser(user: any){
+    user.deleteUser = true;
+    this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
+    this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
+      console.log(data)
+    })
   }
 
   ngOnDestroy(): void {
