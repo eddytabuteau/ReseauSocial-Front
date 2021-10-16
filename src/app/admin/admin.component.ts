@@ -83,9 +83,9 @@ export class AdminComponent implements OnInit {
           this.chatsUsersNumber = this.chatsUsers.length
           this.discussionsUsersNumber = this.discussionsUsers.length
           this.MessageProfilUsersNumber = this.MessageProfilUsers.length
-          console.log(this.chatsUsers)
-          console.log(this.discussionsUsers)
-          console.log(this.MessageProfilUsers)
+          //console.log(this.chatsUsers)
+          //console.log(this.discussionsUsers)
+          //console.log(this.MessageProfilUsers)
 
           this.loading = true;
           this.users = users
@@ -102,7 +102,7 @@ export class AdminComponent implements OnInit {
     // @ts-ignore: Object is possibly 'null'.
     this.socketService.send('user supp',{pseudo: this.userService.user[0].pseudo, mail:this.userService.user[0].email});
     this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
-      console.log(data)
+      //console.log(data)
       this.userService.userDeco()
       this.router.navigate(['/'])
     })
@@ -136,6 +136,13 @@ export class AdminComponent implements OnInit {
     this.watchListe = false;
     this.MessageProfilUsersListeOn = false;
     this.discussionsUsersListeOn = false;
+    this.loading = false;
+    this.MessageProfilUsers = []
+    this.idDiscussionUser = []
+    this.discussionsUsers = []
+    this.idChatUser = []
+    this.chatsUsers = []
+    this.rechercheUsers();
   }
 
   voirListeMessage(): void{

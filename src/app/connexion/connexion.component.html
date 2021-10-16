@@ -10,13 +10,13 @@
                     <div class="form-group">
                         <label for="pseudo">Pseudo</label>
                         <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
-                        <p *ngIf="!userlogin.controls.pseudo.valid && userlogin.controls.pseudo.touched" class="obligation">*Champs obligatoire</p>
+                        <p *ngIf="!userlogin.controls.pseudo.valid && userlogin.controls.pseudo.touched" class="obligation">*Champ obligatoire</p>
                         <p class="obligation" *ngIf="pseudo === false">*Le pseudo n'est pas bon</p>
                     </div>
                     <div class="form-group">
                         <label for="password">Mot de passe</label>
                         <input type="password" id="password" class="form-control" formControlName="password">
-                        <p *ngIf="!userlogin.controls.password.valid && userlogin.controls.password.touched" class="obligation">*Champs obligatoire</p>
+                        <p *ngIf="!userlogin.controls.password.valid && userlogin.controls.password.touched" class="obligation">*Champ obligatoire</p>
                         <p class="obligation" *ngIf="password === false">*Le mot de passe n'est pas bon</p>
                     </div>
                 </div>

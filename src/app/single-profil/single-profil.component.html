@@ -1,25 +1,26 @@
 <div *ngIf="!loading">
     <app-loading-spinner></app-loading-spinner>
 </div>
-<div *ngIf="userProfilData && !commantaires" class="d-flex text-primary">
-    <div class="col-3">
+<div *ngIf="userProfilData && !commantaires" class="d-flex justify-content-center flex-wrap text-primary mt-3">
+    <div class="col-md-3 mb-5">
         <div class="card border-primary">
             <div>
                 <div class="container">
-                    <div class="text-end" *ngIf="user?.droit === 3 || userProfilData.pseudo === user?.pseudo">
+                    <div class="text-center" *ngIf="user?.droit === 3 || userProfilData.pseudo === user?.pseudo">
                             <button *ngIf="!presentationUpdate" class="btn btn-primary" (click)="updateProfil()">Modifier le profil</button>
                             <button *ngIf="presentationUpdate" type="button" class="btn btn-outline-primary btn-lg btn-block" (click)="updateProfilDone()">Valider la modification</button>
                     </div>
+
                     <p class="text-center" *ngIf="textUpdateError" style="color: red;">*La présentation ne doit pas être vide</p>
-                    <div class="row">
-                        <img [src]="userProfilData.photo" alt="photoProfil" class="photoUser mt-2 col-6" id="photoProfil">
-                        <p class="col-6 pseudoUser">{{userProfilData.pseudo}}</p>
+                    <div class="d-flex justify-content-center">
+                        <img [src]="'data:image/jpeg;base64,' + userProfilData.photo" alt="photoProfil" class="photoUser mt-2" id="photoProfil">
                     </div>
-                    <div *ngIf="presentationUpdate">
+                    <div *ngIf="presentationUpdate" class="text-center">
                         <input type="file" id="photo" accept=".jpg, .jpeg, .png" (change)="uploadAvatar($event)">
                         <label for="photo" class="updatePhoto" (click)="testUpdateAvatar()">Modifier la photo</label>
-                      </div>
-                    <div class="text-center">
+                    </div>
+                    <p class="pseudoUser mt-3 text-center">{{userProfilData.pseudo}}</p>
+                    <div class="text-center mt-2">
                         <p>Prénom : {{userProfilData.firstName}}</p>
                         <p>Nom : {{userProfilData.lastName}}</p>
                         <p>Age : {{userProfilData.age}}</p>
@@ -31,34 +32,52 @@
                           </div>
                     </div>
 
+                    <div class="text-center" *ngIf="userProfilData.pseudo === user?.pseudo && !mdpUserOn">
+                        <button  (click)="changeMdp()" class="btn btn-primary">Changer mon mot de passe</button>
+                    </div>
+                    
+                    <div *ngIf="mdpUserOn" class="mb-3">
+                        <form [formGroup]="userEnregistrement" (ngSubmit)="onSubmitMdp()">
+                            <div class="form-group">
+                                <label for="password">Nouveau Mot de Passe</label>
+                                <input type="password" id="password" class="form-control" formControlName="password">
+                                <p *ngIf="!userEnregistrement.controls.password.valid && userEnregistrement.controls.password.touched" class="obligation">*Champ obligatoire</p>
+                                <p *ngIf="!userEnregistrement.controls.password.valid" class="muted text-center">*Le mot de passe est au moins de huit caractères et n'accepte pas les especes</p>
+                            </div>
+                            <div class="d-flex justify-content-center mt-5">
+                                <button type="submit" class="btn btn-outline-primary" [disabled]="userEnregistrement.invalid">Sauvegarder mot de passe</button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
                 
             </div>
         </div>
     </div>
-    <div class="col mt-2" style="margin-right: 2%;margin-left: 2%;">
-            <div class="mb-5">
+    <div class="col-md-8 blockMobil" style="margin-right: 2%;margin-left: 2%;">
+            <div class="mb-3">
                 <input type="text" id="post" class="form-control" [(ngModel)]="texte" placeholder="Envoyer un post...">
                 <button class="btn btn-primary"(click)="send(texte)">Envoyer mon post</button>
             </div>
             <div *ngFor="let post of messageProfil">
                 <div class="card border-primary mb-3">
-                    <div class="mb-4" style="margin-left: 2%;">
-                            <img [src]="'data:image/jpeg;base64,'+ post.photoCreation" alt="photoProfil" class="photoUser mt-2">
-                            <span class="pseudoUser" style="margin-left: 2%;">{{post.pseudoCreation}}</span>
+                    <div class="mb-4 mt-2">
+                            <p class="pseudoUser">{{post.pseudoCreation}}</p>
                     </div>
-                    <p class="text-center mb-4">{{post.message}}</p>
-                    <p>Posté le : {{post.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
+                        <p class="text-center mb-4 textUser">{{post.message}}</p>
+                    
+                    <p class="">Posté le : {{post.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
                     <div>
                         <button class="btn btn-primary"(click)="commentaire(post)">Voir les commentaires</button>
-                        <button *ngIf="user?.droit === 3 || post.pseudoCreation === user?.pseudo || id === user?.pseudo" class="btn btn-warning"(click)="supp(post)">Supprimer</button>
+                        <button *ngIf="user?.droit === 3 || post.pseudoCreation === user?.pseudo" class="btn btn-warning"(click)="supp(post)">Supprimer</button>
                     </div>
                 </div>
             </div>
     </div>
 </div>
 
-<div *ngIf="commantaires" class="mt-2" style="margin-right: 2%;margin-left: 2%;">
+<div *ngIf="commantaires" class="mt-3" style="margin-right: 2%;margin-left: 2%;">
     <div class="text-center">
         <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour sur le profil</span>
     </div>
@@ -68,14 +87,13 @@
     </div>
     <div *ngFor="let commentaire of messageProfilCommentaires">
         <div class="card border-primary mb-3 text-primary">
-            <div class="mb-4" style="margin-left: 2%;">
-                    <img [src]="'data:image/jpeg;base64,'+ commentaire.photoCreation" alt="photoProfil" class="photoUser mt-2">
-                    <span class="pseudoUser" style="margin-left: 2%;">{{commentaire.pseudoCreation}}</span>
+            <div class="mb-4 mt-2">
+                    <p class="pseudoUser">{{commentaire.pseudoCreation}}</p>
             </div>
-            <p class="text-center mb-4">{{commentaire.commentaire}}</p>
+            <p class="text-center mb-4 textUser">{{commentaire.commentaire}}</p>
             <p>Posté le : {{commentaire.date | date: 'medium' : 'UTC+2' : 'fr'}}</p>
             <div>
-                <button *ngIf="user?.droit === 3 || commentaire.pseudoCreation === user?.pseudo || id === user?.pseudo" class="btn btn-warning"(click)="suppCommentaire(commentaire)">Supprimer</button>
+                <button *ngIf="user?.droit === 3 || commentaire.pseudoCreation === user?.pseudo" class="btn btn-warning"(click)="suppCommentaire(commentaire)">Supprimer</button>
             </div>
         </div>
     </div>

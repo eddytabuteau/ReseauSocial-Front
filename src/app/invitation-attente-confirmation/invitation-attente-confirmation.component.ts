@@ -83,26 +83,26 @@ export class InvitationAttenteConfirmationComponent implements OnInit, OnDestroy
   }
 
   accepterUneInvitation(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser)
     this.users.forEach((element: { pseudo: string;invitation: boolean }) => {
       if(element.pseudo == dataUser.pseudo){
         element.invitation = true;
         this.resInvitation = "Invitation acceptée"
         // @ts-ignore: Object is possibly 'null'.
-        this.socketService.send('invitation reponse',{dataUserDemandeur:dataUser,dataUseReceveur:this.userService.user[0].pseudo,resInvitation: this.resInvitation});
+        this.socketService.send('invitation reponse',{dataUserDemandeur:dataUser.pseudo,dataUseReceveur:this.userService.user[0].pseudo,resInvitation: this.resInvitation});
         
       }
     });
   }
 
   ignorerUneInvitation(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser)
     this.users.forEach((element: { pseudo: string;invitation: boolean }) => {
       if(element.pseudo == dataUser.pseudo){
         element.invitation = true;
         this.resInvitation = "Invitation ignorée"
         // @ts-ignore: Object is possibly 'null'.
-        this.socketService.send('invitation reponse',{dataUserDemandeur:dataUser,dataUseReceveur:this.userService.user[0].pseudo,resInvitation: this.resInvitation});
+        this.socketService.send('invitation reponse',{dataUserDemandeur:dataUser.pseudo,dataUseReceveur:this.userService.user[0].pseudo,resInvitation: this.resInvitation});
         
       }
     });

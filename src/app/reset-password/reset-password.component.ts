@@ -35,7 +35,7 @@ export class ResetPasswordComponent implements OnInit {
     this.socketService.send('verif email user',formValueUserEmail);
     this.socketService.listenOnce('reponse verif email user').subscribe((data) =>{
       this.reponse = data;
-      console.log(this.reponse)
+      //console.log(this.reponse)
       if (this.reponse.email === false){
         this.loading = false;
         this.email = false;

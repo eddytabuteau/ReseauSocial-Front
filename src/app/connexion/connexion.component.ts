@@ -50,7 +50,7 @@ export class ConnexionComponent implements OnInit {
         this.loading = false;
           if (this.pseudo === true && this.password === true){
             this.userService.userLog(this.reponse.datas)
-            console.log(this.reponse.datas[0].listeUser[0])
+            //console.log(this.reponse.datas[0].listeUser[0])
             this.router.navigate(['/'])
           }
       }

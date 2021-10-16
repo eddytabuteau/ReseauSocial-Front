@@ -11,12 +11,14 @@ import { UserService } from 'src/app/services/user.service';
 export class ListeUserComponent implements OnInit, OnDestroy {
 
   @Input() listeUsers: any;
-
+  userDemandeur?: string;
   intervalId?: any;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
   ngOnInit(): void {
+    // @ts-ignore: Object is possibly 'null'.
+    this.userDemandeur = this.userService.user[0].pseudo
     this.search()
   }
 
@@ -24,7 +26,7 @@ export class ListeUserComponent implements OnInit, OnDestroy {
     user.deleteUser = true;
     this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
     this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
-      console.log(data)
+      //console.log(data)
     })
   }
 

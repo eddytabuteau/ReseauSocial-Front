@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 registerLocaleData(localeFr, 'fr');
 
 @Component({
@@ -30,11 +31,14 @@ export class SingleProfilComponent implements OnInit {
   selectedFile: any;
   avatarDone = false;
   id?: string;
+  userEnregistrement!: FormGroup;
+  mdpUserOn = false;
 
-  constructor(private route: ActivatedRoute, private socketService: SocketService,private userService: UserService,private http: HttpClient) { }
+  constructor(private formBuilder: FormBuilder,private route: ActivatedRoute, private socketService: SocketService,private userService: UserService,private http: HttpClient) { }
 
   ngOnInit(): void {
     this.profil()
+    this.initFormEnregistrement()
   }
 
   profil():void {
@@ -64,14 +68,14 @@ export class SingleProfilComponent implements OnInit {
       pseudo: reponse.pseudo,
       droit: reponse.droit,
       listeUser: reponse.listeUser,
-      photo: 'data:image/jpeg;base64,' + reponse.photo,
+      photo:  reponse.photo,
       mail:reponse.email
     }
     const message = reponse.messageProfil.reverse()
     this.messageProfil = message
     this.textPresentation = this.userProfilData.presentation
     this.loading = true;
-    console.log(this.userProfilData)
+    //console.log(this.userProfilData)
 
     })
   }
@@ -85,7 +89,6 @@ export class SingleProfilComponent implements OnInit {
       message:texte,
       date:new Date(),
       pseudoCreation: this.user?.pseudo,
-      photoCreation: this.user?.photo,
       droitAdmin: 3,
       profilDestination:this.userProfilData?.pseudo
     }
@@ -103,7 +106,7 @@ export class SingleProfilComponent implements OnInit {
     
     this.socketService.send('commentaire update',this.idMessage);
     this.socketService.listenOnce('reponse commentaire update').subscribe((data) =>{
-      console.log(data)
+      //console.log(data)
       this.messageProfilCommentaires = data
       this.loading = true;
       this.commantaires = true;
@@ -118,11 +121,10 @@ export class SingleProfilComponent implements OnInit {
       commentaire:texte,
       date:new Date(),
       pseudoCreation: this.user?.pseudo,
-      photoCreation: this.user?.photo,
       idMessage: this.idMessage
 
     }
-    console.log(this.idMessage)
+    //console.log(this.idMessage)
     this.socketService.send('commentaire',{commentaire:commantaire,mail:this.userProfilData?.mail});
     this.socketService.listenOnce('reponse commentaire').subscribe((data) =>{
       this.socketService.send('commentaire update',this.idMessage);
@@ -143,7 +145,7 @@ export class SingleProfilComponent implements OnInit {
   }
   supp(post: any): void{
     this.loading = false;
-    console.log(post)
+    //console.log(post)
     this.socketService.send('supprimer message profil',{idMessage:post.idMessage,pseudo:post.profilDestination});
     this.socketService.listenOnce('reponse supprimer message profil').subscribe((data) =>{
       this.profil();
@@ -173,7 +175,7 @@ export class SingleProfilComponent implements OnInit {
         // @ts-ignore: Object is possibly 'null'.
       this.http.post<any>('https://reseau-social-back.herokuapp.com/file-Update',formData,{responseType: 'text'}).subscribe(
         (res)=> {
-        console.log(res);
+        //console.log(res);
         },
         (err) => console.log(err)
       );
@@ -219,5 +221,21 @@ export class SingleProfilComponent implements OnInit {
         this.loading = true;
       })
     })
+  }
+
+  changeMdp(): void{
+    this.mdpUserOn = true;
+  }
+  initFormEnregistrement() {
+    this.userEnregistrement = this.formBuilder.group({
+      password: ['', [Validators.required, Validators.pattern(/^\S*$/),Validators.minLength(8)]],
+    });
+  }
+
+  onSubmitMdp(): void{
+    const newMdp = this.userEnregistrement?.value.password;
+    //console.log(newMdp)
+    this.socketService.send('update mdp',{pseudo:this.userProfilData?.pseudo,password:newMdp});
+    this.mdpUserOn = false;
   }
 }

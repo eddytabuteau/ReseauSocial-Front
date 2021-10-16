@@ -180,7 +180,7 @@ initFormPresentation() {
      // @ts-ignore: Object is possibly 'null'.
      this.pseudodispo = data.pseudo
 
-     console.log(this.emaildispo,this.pseudodispo)
+     //console.log(this.emaildispo,this.pseudodispo)
      this.loading = false;
      if(this.emaildispo === true && this.pseudodispo === true){
       this.loading = true;

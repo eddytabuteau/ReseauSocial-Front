@@ -39,10 +39,10 @@ export class RecommandationComponent implements OnInit , OnDestroy{
       data[0].listeUser[0].listeAmisRecommandé.forEach(element => {
         listeUserRecommandé.push(element.pseudoRecommandation)
       });
-      console.log(listeUserRecommandé)
+      //console.log(listeUserRecommandé)
       this.socketService.send('recherche user recommandation',listeUserRecommandé );
       this.socketService.listenOnce('reponse recherche user recommandation').subscribe((data) =>{
-        console.log(data)
+        //console.log(data)
         this.resRechercheUsers = data;
         const users: { pseudo: string; buffer: string;firstName: string;lastName: string;email: string ;invitation: boolean; search: boolean;pseudoOrigineRecommandation: string}[] =[]
         // @ts-ignore: Object is possibly 'null'.
@@ -57,7 +57,7 @@ export class RecommandationComponent implements OnInit , OnDestroy{
           let pseudoOrigineRecommandation = ""
             // @ts-ignore: Object is possibly 'null'.
             this.userService.user[0].listeUser[0].listeAmisRecommandé.forEach(element => {
-              console.log(element)
+              //console.log(element)
             if(pseudo == element.pseudoRecommandation){
               pseudoOrigineRecommandation = element.pseudoOrigineRecommandation
             }
@@ -66,7 +66,7 @@ export class RecommandationComponent implements OnInit , OnDestroy{
           });
           this.loading = false;
           this.users = users
-          console.log(this.users)
+          //console.log(this.users)
 
           if(this.users.length == 0){
             this.pasDeRecommandation = true;
@@ -101,7 +101,7 @@ export class RecommandationComponent implements OnInit , OnDestroy{
     );
   }
   envoyerUneInvitation(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser)
     this.users.forEach((element: { pseudo: string;invitation: boolean }) => {
       if(element.pseudo == dataUser.pseudo){
         element.invitation = true;
@@ -113,7 +113,7 @@ export class RecommandationComponent implements OnInit , OnDestroy{
   }
 
   ignorerUneInvitation(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser)
     this.users.forEach((element: { pseudo: string;invitation: boolean }) => {
       if(element.pseudo == dataUser.pseudo){
         element.invitation = true;

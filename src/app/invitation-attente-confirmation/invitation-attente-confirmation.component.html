@@ -1,25 +1,21 @@
-<div class="input-group mb-3 " style="width: 20%;margin: auto;margin-top: 1%;">
-    <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUser">
+<div class="input-group mb-3 userBlockMobil" style="margin: auto;">
+    <input type="text" class="form-control mt-2" placeholder="Recherche par pseudo..." id="serchUser">
 </div>
 
 <div *ngIf="loading">
     <app-loading-spinner></app-loading-spinner>
 </div>
 
-<div *ngFor="let user of users" style="width: 45%;margin: auto;margin-top: 3%;">
-    <div *ngIf="user.search == false" class="card border-primary" >
-        <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
-            <div>
-                <img [src]="user.buffer" alt="photo" class="photo">
-            </div>
-            <div class="mt-3">
-                <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
+<div *ngFor="let user of users" class="userBlockMobil col-md-4" style="margin: auto;">
+    <div *ngIf="user.search == false" class="card border-primary mb-2" >
+        <div  class="card-body text-primary text-center">
+                <img [src]="user.buffer" alt="photo" class="photoUser">
+                <p class="pseudoUser mt-2">Pseudo : {{user.pseudo}}</p>
                 <p>Prénom :{{user.firstName}}</p>
                 <p>Nom : {{user.lastName}}</p>
-                <button *ngIf="user.invitation == false" (click)="accepterUneInvitation(user)" type="button" class="btn btn-outline-success btn-lg btn-block mt-3" style="display: inherit;">Accepter invitation</button>
-                <button *ngIf="user.invitation == false" (click)="ignorerUneInvitation(user)" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3" style="display: inherit;">Ignorer invitation</button>
+                <button *ngIf="user.invitation == false" (click)="accepterUneInvitation(user)" type="button" class="btn btn-outline-success btn-lg btn-block mt-3 blockButton">Accepter invitation</button>
+                <button *ngIf="user.invitation == false" (click)="ignorerUneInvitation(user)" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3 blockButton">Ignorer invitation</button>
                 <p *ngIf="user.invitation == true" class="btn btn-info btn-lg btn-block mt-3">{{resInvitation}}</p>
-            </div>
         </div>
     </div>
 </div>

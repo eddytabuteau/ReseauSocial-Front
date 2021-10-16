@@ -24,7 +24,7 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
 
   listeRecommandationDatas?: any[];
   userRecommandationDemandeur?: string;
-  userRecommandationReceveur?: any[];
+  userRecommandationReceveur?: any;
   pseudoRecommandationReceveur?: string;
   recommandationUser = false;
   pasDeRecommandation = false;
@@ -47,18 +47,18 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   }
 
   rejoindreConversationUserOn(data: any): void{
-    console.log(data)
+    //console.log(data)
     this.loading = true;
   const usersRejoindre = data.discussion[0].rejoindreDiscussion
   const usersRejoindrePseudo: any[] = []
 
-  console.log(usersRejoindre)
+  //console.log(usersRejoindre)
   if(usersRejoindre.length > 0){
     usersRejoindre.forEach((element: any) => {
       usersRejoindrePseudo.push(element.pseudoDemandeur)
     });
 
-console.log(usersRejoindrePseudo)
+//console.log(usersRejoindrePseudo)
     this.socketService.send('recherche user invitation',usersRejoindrePseudo);
     this.socketService.listenOnce('reponse recherche user invitation').subscribe((data) =>{
       const users: { pseudo: string; buffer: string;firstName: string;lastName: string;search: boolean;idDiscussion: string}[] =[]
@@ -84,7 +84,7 @@ console.log(usersRejoindrePseudo)
   
       
         this.rejoindreDiscussionEncoursUser = users
-        console.log(this.rejoindreDiscussionEncoursUser)
+        //console.log(this.rejoindreDiscussionEncoursUser)
         this.loading = false;
     })
   }
@@ -127,7 +127,7 @@ console.log(usersRejoindrePseudo)
   
       this.socketService.send('updateDataUser',pseudoDemandeurUpdate);
       this.socketService.listenOnce('reponse updateDataUser').subscribe((data) =>{
-        console.log(data)
+        //console.log(data)
         // @ts-ignore: Object is possibly 'null'.
         this.userService.userLog(data)
         // @ts-ignore: Object is possibly 'null'.
@@ -160,7 +160,7 @@ console.log(usersRejoindrePseudo)
             let idDiscussion = "";
             
             discussion.DiscussionConfirmées.forEach((element: any) => {
-              console.log(element)
+              //console.log(element)
               if(element.pseudo === pseudoDemandeurUpdate){
                 discussionConfirmee = true;
                 idDiscussion = element.idDiscussion
@@ -182,7 +182,7 @@ console.log(usersRejoindrePseudo)
             this.loading = false;
             this.rejoindreConversationUserOn(this.user)
             this.users = users
-            console.log(users)
+            //console.log(users)
         })
       })
     }
@@ -190,8 +190,8 @@ console.log(usersRejoindrePseudo)
   }
 
   recommandation(dataUser:any): void{
-    console.log(dataUser)
-    console.log(this.listeAmisConfDemandeurRecommandation)
+    //console.log(dataUser)
+    //console.log(this.listeAmisConfDemandeurRecommandation)
     const listeRecommandation = this.listeAmisConfDemandeurRecommandation
     const indexUserReceveurRecommandation = listeRecommandation.indexOf(dataUser.pseudo);//on retire le pseudo du receveur de la recommandation
         if(indexUserReceveurRecommandation > -1){
@@ -222,7 +222,7 @@ console.log(usersRejoindrePseudo)
             
       })    
        //avec la liste des pseudo en recommandation , on va récupérer la data de tous ces users(mail,...)
-        console.log(listeRecommandation)
+        //console.log(listeRecommandation)
         this.recommandationUser = true;
         const listeRecommandationData: any[] | undefined = []
         listeRecommandation.forEach( (userListeRecommandation: any) => {
@@ -239,14 +239,14 @@ console.log(usersRejoindrePseudo)
         }
         clearInterval(this.intervalId)
         this.searchReco()
-        console.log(this.listeRecommandationDatas)
+        //console.log(this.listeRecommandationDatas)
         this.users = []
       }
     });
   }
 
   profilUser(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser)
     this.router.navigate(['/profil/' + dataUser.pseudo])
   }
 
@@ -266,13 +266,13 @@ console.log(usersRejoindrePseudo)
     }
 
     if(dataUser.discussionConfirmee){
-      console.log('discussion Confirmée')
+      //console.log('discussion Confirmée')
       const confirm = true;
       //lancer une discussion quand l'ID est déjà créé
       this.socketService.send('creation discussion user',{demandeur:demandeur,receveur: receveur,idDiscussion: dataUser.idDiscussion,confirme: confirm});
       this.socketService.listenOnce('reponse creation discussion user').subscribe((data) =>{
         this.router.navigate(['/discussion/' + data])
-        console.log(data)
+        //console.log(data)
       })
     }
     else{
@@ -280,7 +280,7 @@ console.log(usersRejoindrePseudo)
       this.socketService.send('creation discussion user',{demandeur:demandeur,receveur: receveur,idDiscussion: dataUser.connexionId,confirme: false});
       this.socketService.listenOnce('reponse creation discussion user').subscribe((data) =>{
         this.router.navigate(['/discussion/' + data])
-        console.log(data)
+        //console.log(data)
       })
     }
     
@@ -294,7 +294,7 @@ const pseudoReceveur =  this.userService.user[0].pseudo
       this.socketService.send('rejoindre Discussion creation',{pseudoOrigine:user.pseudo,pseudoReceveur: pseudoReceveur,idDiscussion: user.idDiscussion});
       this.socketService.listenOnce('reponse rejoindre Discussion creation').subscribe((data) =>{
         this.router.navigate(['/discussion/' + data])
-        console.log(data)
+        //console.log(data)
       })
   }
   
@@ -323,11 +323,15 @@ const pseudoReceveur =  this.userService.user[0].pseudo
     );
   }
   envoyerRecommandation(dataUser:any): void{
-    console.log(dataUser)
+    //console.log(dataUser.pseudo)
+    //console.log(this.userRecommandationDemandeur)
+    
+    const dataReceveur = {email: this.userRecommandationReceveur?.email,pseudo: this.userRecommandationReceveur?.pseudo}
+    //console.log(dataReceveur)
     this.listeRecommandationDatas?.forEach((element: { pseudo: string;invitation: boolean }) => {
       if(element.pseudo == dataUser.pseudo){
         element.invitation = true;
-        this.socketService.send('recommandation',{userRecommandation :dataUser,userRecommandationDemandeur:this.userRecommandationDemandeur,userRecommandationReceveur: this.userRecommandationReceveur });
+        this.socketService.send('recommandation',{userRecommandation :dataUser.pseudo,userRecommandationDemandeur:this.userRecommandationDemandeur,userRecommandationReceveur: dataReceveur });
         
       }
     });
@@ -343,6 +347,7 @@ const pseudoReceveur =  this.userService.user[0].pseudo
     this.loading = false;
     this.listeRecommandationDatas = []
     this.pasDeRecommandation = false;
+    this.rechercheAmi()
     this.search()
   }
 
@@ -350,7 +355,7 @@ const pseudoReceveur =  this.userService.user[0].pseudo
     user.deleteUser = true;
     this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
     this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
-      console.log(data)
+      //console.log(data)
     })
   }
 
@@ -388,7 +393,7 @@ listeAmis(user: any): void{
 
       if(data[0].listeUser[0].listeAmisConfirmées){
         const array = data[0].listeUser[0].listeAmisConfirmées
-        console.log(array)
+        //console.log(array)
   
         const index = array.indexOf(this.userRecommandationDemandeur);
         if (index > -1) {

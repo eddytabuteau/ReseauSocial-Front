@@ -1,26 +1,52 @@
-<div class="input-group mb-3 " style="width: 20%;margin: auto;margin-top: 1%;">
-    <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUser">
-</div>
-
 <div *ngIf="loading">
     <app-loading-spinner></app-loading-spinner>
 </div>
 
-<div *ngFor="let user of users" style="width: 45%;margin: auto;margin-top: 3%;">
-    <div *ngIf="user.search == false" class="card border-primary" >
-        <div  class="card-body text-primary d-flex justify-content-center flex-wrap">
-            <div>
-                <img [src]="user.buffer" alt="photo" class="photo">
+<div *ngIf="!listeAmisLook">
+    <div class="input-group mb-3 userBlockMobil" style="margin: auto;">
+        <input type="text" class="form-control mt-2" placeholder="Recherche par pseudo..." id="serchUser">
+    </div>
+    
+    
+    
+    <div *ngFor="let user of users" class="userBlockMobil col-md-4" style="margin: auto;">
+        <div *ngIf="user.search == false" class="card border-primary mb-2" >
+            <div  class="card-body text-primary text-center">
+                    <img [src]="user.buffer" alt="photo" class="photoUser">
+                    <p class="pseudoUser mt-2">Pseudo : {{user.pseudo}}</p>
+                    <p>Prénom :{{user.firstName}}</p>
+                    <p>Nom : {{user.lastName}}</p>
+                    <button *ngIf="droitAdmin === 3" (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3 blockButton">Voir Profil</button>
+                    <button (click)="listeAmis(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3 blockButton" >Voir liste d'amis</button>
+                    <button *ngIf="!user.deleteUser && droitAdmin === 3" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3 blockButton" (click)="deleteUser(user)">Supprimer utilisateur</button>
+                    <p *ngIf="user.deleteUser && droitAdmin === 3" class="btn btn-success btn-lg btn-block mt-3 blockButton">utilisateur supprimé</p>
+                    <button *ngIf="user.invitation == false" (click)="envoyerUneInvitation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3 blockButton">Envoyer une invitation</button>
+                    <p *ngIf="user.invitation == true" class="btn btn-success btn-lg btn-block mt-3 blockButton">Invitation envoyée</p>
             </div>
-            <div class="mt-3">
-                <p style="font-size: xx-large;">Pseudo : {{user.pseudo}}</p>
-                <p>Prénom :{{user.firstName}}</p>
-                <p>Nom : {{user.lastName}}</p>
-                <button *ngIf="droitAdmin === 3" (click)="profilUser(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3">Voir Profil</button>
-                <button *ngIf="!user.deleteUser && droitAdmin === 3" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3" (click)="deleteUser(user)">Supprimer utilisateur</button>
-                <p *ngIf="user.deleteUser && droitAdmin === 3" class="btn btn-success btn-lg btn-block mt-3">utilisateur supprimé</p>
-                <button *ngIf="user.invitation == false" (click)="envoyerUneInvitation(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3">Envoyer une invitation</button>
-                <p *ngIf="user.invitation == true" class="btn btn-success btn-lg btn-block mt-3">Invitation envoyée</p>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="listeAmisLook">
+    <h1 class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Liste d'amis de {{userListeAmis}}</h1>
+    <div class="text-center mt-2" style="cursor: pointer;">
+        <span class="muted cursor text-center" (click)="back()" style="font-size: large;"><i class="bi bi-arrow-left" style="margin-right: 0.5%;"></i>Retour à la liste des utilisateurs</span>
+    </div>
+    <div class="input-group mb-3 userBlockMobil" style="margin: auto;">
+        <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUserAmis">
+    </div>
+
+
+    <div *ngFor="let user of listeAmisUser" class="userBlockMobil col-md-4" style="margin: auto;">
+        <div *ngIf="user.search == false" class="card border-primary mb-2" >
+            <div  class="card-body text-primary text-center">
+                    <img [src]="user.buffer" alt="photo" class="photoUser">
+                    <p class="pseudoUser mt-2">Pseudo : {{user.pseudo}}</p>
+                    <p>Prénom :{{user.firstName}}</p>
+                    <p>Nom : {{user.lastName}}</p>  
+                    <button (click)="listeAmis(user)" type="button" class="btn btn-outline-primary btn-lg btn-block mt-3 blockButton">Voir liste d'amis</button>
+                    <button *ngIf="droitAdmin === 3" (click)="suppListeAmisUser(user.pseudo)" type="button" class="btn btn-outline-danger btn-lg btn-block mt-3 blockButton">Supprimé de la liste d'amis de {{userListeAmis}}</button>           
             </div>
         </div>
     </div>

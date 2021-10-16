@@ -57,12 +57,11 @@ export class ChatSujetComponent implements OnInit, OnDestroy {
       message:texte,
       date:new Date(),
       pseudoCreation: this.user?.pseudo,
-      photoCreation: this.user?.photo,
       idChat: this.idChat,
       droitAdmin: this.user?.droit
 
     }
-    console.log(message)
+    //console.log(message)
     this.socketService.send('chat', message);
   }
 

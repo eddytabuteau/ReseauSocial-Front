@@ -98,7 +98,7 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
           });
           this.users = users
           this.loading = true;
-          console.log(this.users)
+          //console.log(this.users)
           
         })
   }
@@ -112,7 +112,7 @@ export class ChatCreationComponent implements OnInit,  OnDestroy {
       pseudo: user.pseudo,
     }
     this.participants.push(participant)
-    console.log(user)
+    //console.log(user)
   }
 
   enleverParticipant(participant: any){

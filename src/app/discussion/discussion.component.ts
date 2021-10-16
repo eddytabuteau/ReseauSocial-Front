@@ -68,13 +68,12 @@ export class DiscussionComponent implements OnInit,OnDestroy {
   
   sendMessage(texte:string): void{
     // @ts-ignore: Object is possibly 'null'.
-    console.log(this.userService.user)
+    //console.log(this.userService.user)
     // @ts-ignore: Object is possibly 'null'.
     const pseudoDemandeur = this.userService.user[0]
     this.user = {
       pseudo: pseudoDemandeur.pseudo,
       droit: pseudoDemandeur.droit,
-      photo: pseudoDemandeur.photo,
     }
     const messageData = (<HTMLInputElement>document.getElementById('commentaire'));
     messageData.value = ""
@@ -83,11 +82,10 @@ export class DiscussionComponent implements OnInit,OnDestroy {
       message:texte,
       date:new Date(),
       pseudoCreation: this.user?.pseudo,
-      photoCreation: this.user?.photo,
       idDiscussion: this.idDiscussion
 
     }
-    console.log(message)
+    //console.log(message)
     this.socketService.send('discussion', message);
     
   }

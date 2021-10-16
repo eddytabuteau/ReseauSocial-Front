@@ -10,38 +10,40 @@ import { UserService } from '../services/user.service';
 })
 export class AccueilComponent implements OnInit,OnDestroy {
 
-  connexionNumbers: unknown;
+  connexionNumbers = 0;
   inscriptionDone: boolean = false;
   connexionDone: boolean = false;
-  nombreInscrits?: number;
+  nombreInscrits = 0;
   aProposOn = false;
   
   nombreInscritsSubscription: Subscription | undefined;
-  connexionNumbersSubscription: Subscription | undefined;
-  connexionNumbersDisconectSubscription: Subscription | undefined;
   logDisconectSubscription: Subscription | undefined;
   logConectSubscription: Subscription | undefined;
+
   constructor(private socketService: SocketService,
               private userService: UserService){}
 
   ngOnInit(): void {
-    this.connexionNumbers = this.userService.usersConnexion
-    this.connexionNumbersSubscription = this.socketService.listen('nombre connexion').subscribe((data) =>{
-      this.connexionNumbers = data
-    
-    })
-
-    this.connexionNumbersDisconectSubscription = this.socketService.listen('deconnexion').subscribe((data) =>{
-      this.connexionNumbers = data
-    })
 
     this.nombreInscritsSubscription = this.socketService.listen('nombre inscrits').subscribe((data: any) =>{
       this.nombreInscrits = data.length
+      this.connexionNumbers = 0
+      //console.log(data)
+      if(data != null){
+        data.forEach((element: any) => {
+          if(element.connexion === true){
+            this.connexionNumbers++
+          }
+        });
+      }
+      
     
     })
      
+    //la socket va demander le nombre d'inscrtis et de connexion . La réponse va être récupérer dans les subscribtions plus haut
      this.socketService.send('connexion','demande des users');
 
+    //ci-dessous la data récupérer lors de l'incription ou d'un log à travers un service
      this.logConectSubscription = this.userService.PostLogServiceSubject.subscribe((data)=>{
       this.connexionDone = data;
     })
@@ -66,8 +68,6 @@ export class AccueilComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(): void {
     this.nombreInscritsSubscription?.unsubscribe
-    this.connexionNumbersSubscription?.unsubscribe
-    this.connexionNumbersDisconectSubscription?.unsubscribe
     this.logConectSubscription?.unsubscribe
     this.logDisconectSubscription?.unsubscribe
   }

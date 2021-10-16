@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocketService } from '../services/socket.service';
 import { UserService } from '../services/user.service';
@@ -14,11 +15,13 @@ export class MenuComponent implements OnInit,OnDestroy {
   id?: string;
   dataLog?: boolean;
   droitAdmin?: number;
+  suppUserSubscription: Subscription | undefined;
 
   logConectSubscription: Subscription | undefined;
   userSubscription: Subscription | undefined;
   constructor(private socketService: SocketService,
-              private userService: UserService){}
+              private userService: UserService,
+              private router: Router,){}
 
   ngOnInit(): void {
     this.logConectSubscription = this.userService.PostLogServiceSubject.subscribe((data)=>{
@@ -32,6 +35,14 @@ export class MenuComponent implements OnInit,OnDestroy {
       
     })
     
+
+    this.suppUserSubscription = this.socketService.listen('reponse user supp deco').subscribe((data) =>{
+      if(this.id === data){
+        this.deconnexion()
+        this.router.navigate(['/']);
+      }
+    
+    })
     
   }
   
@@ -45,6 +56,7 @@ export class MenuComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.suppUserSubscription?.unsubscribe
     this.logConectSubscription?.unsubscribe
     this.userSubscription?.unsubscribe
   }

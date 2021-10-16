@@ -27,7 +27,7 @@
                                 <option value="Homme">Homme</option>
                                 <option value="Femme">Femme</option>
                             </select>
-                            <p *ngIf="!userData.controls.gender.valid && userData.controls.gender.touched" class="obligation">*Champs obligatoire</p>
+                            <p *ngIf="!userData.controls.gender.valid && userData.controls.gender.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                         <div class="form-group">
                             <label for="nationality">Nationalité</label>
@@ -282,7 +282,7 @@
                                 <option value="ZMB">Zambie</option>
                                 <option value="ZWE">Zimbabwe</option>
                             </select>
-                            <p *ngIf="!userData.controls.nationality.valid && userData.controls.nationality.touched" class="obligation">*Champs obligatoire</p>
+                            <p *ngIf="!userData.controls.nationality.valid && userData.controls.nationality.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                     </div>
                 </mat-form-field>
@@ -342,19 +342,19 @@
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
                             <input type="text" id="email" class="form-control" formControlName="email">
-                            <p *ngIf="!userEnregistrement.controls.email.valid && userEnregistrement.controls.email.touched" class="obligation">*Champs obligatoire</p>
-                            <p *ngIf="testDispo && !emaildispo" class="obligation">Cette adresse mail est déjà utilisé</p>
+                            <p *ngIf="!userEnregistrement.controls.email.valid && userEnregistrement.controls.email.touched" class="obligation">*Champ obligatoire</p>
+                            <p *ngIf="testDispo && !emaildispo" class="obligation">Cette adresse mail est déjà utilisée</p>
                         </div>
                         <div class="form-group">
                             <label for="pseudo">Pseudo</label>
                             <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
-                            <p *ngIf="!userEnregistrement.controls.pseudo.valid && userEnregistrement.controls.pseudo.touched" class="obligation">*Champs obligatoire</p>
-                            <p *ngIf="testDispo && !pseudodispo" class="obligation">Ce pseudo est déjà utilisé</p>
+                            <p *ngIf="!userEnregistrement.controls.pseudo.valid && userEnregistrement.controls.pseudo.touched" class="obligation">*Champ obligatoire</p>
+                            <p *ngIf="testDispo && !pseudodispo" class="obligation">Ce pseudo est déjà utilisée</p>
                         </div>
                         <div class="form-group">
                             <label for="password">Mot de passe</label>
                             <input type="password" id="password" class="form-control" formControlName="password">
-                            <p *ngIf="!userEnregistrement.controls.password.valid && userEnregistrement.controls.password.touched" class="obligation">*Champs obligatoire</p>
+                            <p *ngIf="!userEnregistrement.controls.password.valid && userEnregistrement.controls.password.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                     </div>
                 </mat-form-field>
@@ -381,15 +381,17 @@
                         <div class="form-group">
                             <label for="firstName">Prénom</label>
                             <input type="text" id="firstName" class="form-control" formControlName="firstName">
-                            <p *ngIf="!userData.controls.firstName.valid && userData.controls.firstName.touched">*Champs obligatoire</p>
+                            <p *ngIf="!userData.controls.firstName.valid && userData.controls.firstName.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                         <div class="form-group">
                             <label for="lastName">Nom</label>
                             <input type="text" id="lastName" class="form-control" formControlName="lastName">
+                            <p *ngIf="!userData.controls.lastName.valid && userData.controls.lastName.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                         <div class="form-group">
                             <label for="age">Age</label>
                             <input type="number" id="age" class="form-control" formControlName="age">
+                            <p *ngIf="!userData.controls.age.valid && userData.controls.age.touched" class="obligation">*Veuillez saisir votre age</p>
                         </div>
                         <div class="form-group">
                             <label for="gender">Genre</label>
@@ -397,6 +399,7 @@
                                 <option value="Homme">Homme</option>
                                 <option value="Femme">Femme</option>
                             </select>
+                            <p *ngIf="!userData.controls.gender.valid && userData.controls.gender.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                         <div class="form-group">
                             <label for="nationality">Nationalité</label>
@@ -651,12 +654,14 @@
                                 <option value="ZMB">Zambie</option>
                                 <option value="ZWE">Zimbabwe</option>
                             </select>
+                            <p *ngIf="!userData.controls.nationality.valid && userData.controls.nationality.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                     </div>
                 </mat-form-field>
                     <div class="d-flex justify-content-center mt-5">
                         <button type="submit" class="btn btn-outline-primary" matStepperNext [disabled]="userData.invalid">Next</button>
                     </div>
+                    <p class="muted text-center" *ngIf="!userData.controls.nationality.valid">*Veulliez saisir tous les champs pour passer à l'étape suivante</p>
                 </form>
             </mat-step>
             <mat-step [stepControl]="userPresentation">
@@ -666,11 +671,13 @@
                     <div class="d-flex justify-content-around flex-wrap mt-5">
                         <label for="presentation">Présentation</label>
                         <textarea id="presentation" class="form-control" formControlName="presentation" ></textarea>
+                        <p *ngIf="!userPresentation.controls.presentation.valid && userPresentation.controls.presentation.touched" class="obligation">*Champ obligatoire et vérifier si vous n'avez pas laisser des espaces à la fin de votre texte</p>
                     </div>
                 </mat-form-field>
                     <div class="d-flex justify-content-center mt-5">
                         <button type="submit" class="btn btn-outline-primary" matStepperNext [disabled]="userPresentation.invalid">Next</button>
                     </div>
+                    <p *ngIf="!userPresentation.controls.presentation.valid" class="muted text-center">*Veuillez vous présenter pour passer à l'étape suivante</p>
                 </form>
             </mat-step>
             <mat-step [stepControl]="userPhoto">
@@ -678,13 +685,12 @@
                     <ng-template matStepLabel>Photo de profil</ng-template>
                     <mat-form-field appearance="fill">
                     <div class="d-flex justify-content-around flex-wrap mt-5">
-                        <div class="form-group">
-                            <label for="photo">Choisir une photo de profil</label>
+                            <label for="photo" (click)="test()"style="color: #227afd;">Choisir une photo de profil</label>
                             <input type="file"
                                    id="photo" class="form-control" formControlName="photo"
-                                   accept="image/png, image/jpeg" (change)="onFileSelected($event)" (click)="test()">
-                        </div>
+                                   accept="image/png, image/jpeg" (change)="onFileSelected($event)" >
                     </div>
+                    <p *ngIf="!userPhoto.controls.photo.valid" class="muted text-center">*Uniquement les formats png et jpeg sont acceptés</p>
                     <div class="text-center mt-3">
                         <img src="" alt="" id="photoProfil">
                     </div>
@@ -692,9 +698,13 @@
                     <div class="d-flex justify-content-center mt-5">
                         <button type="submit" class="btn btn-outline-primary" matStepperNext [disabled]="userPhoto.invalid">Next</button>
                     </div>
+                    <p *ngIf="!userPhoto.controls.photo.valid" class="muted text-center">*Veulliez soumettre votre photo pour passer à l'étape suivante</p>
                 </form>
             </mat-step>
             <mat-step [stepControl]="userEnregistrement">
+                <div *ngIf="loading">
+                    <app-loading-spinner></app-loading-spinner>
+                </div>
                 <form [formGroup]="userEnregistrement" (ngSubmit)="onSubmitEnregistrement()">
                     <ng-template matStepLabel>Enregistrement</ng-template>
                     <mat-form-field appearance="fill">
@@ -702,20 +712,27 @@
                         <div class="form-group">
                             <label for="email">Adresse e-mail</label>
                             <input type="text" id="email" class="form-control" formControlName="email">
+                            <p *ngIf="!userEnregistrement.controls.email.valid && userEnregistrement.controls.email.touched" class="obligation">*Champ obligatoire</p>
+                            <p *ngIf="testDispo && !emaildispo" class="obligation">Cette adresse mail est déjà utilisée</p>
                         </div>
                         <div class="form-group">
                             <label for="pseudo">Pseudo</label>
                             <input type="text" id="pseudo" class="form-control" formControlName="pseudo">
+                            <p *ngIf="!userEnregistrement.controls.pseudo.valid && userEnregistrement.controls.pseudo.touched" class="obligation">*Champ obligatoire</p>
+                            <p *ngIf="testDispo && !pseudodispo" class="obligation">Ce pseudo est déjà utilisée</p>
                         </div>
                         <div class="form-group">
                             <label for="password">Mot de passe</label>
                             <input type="password" id="password" class="form-control" formControlName="password">
+                            <p *ngIf="!userEnregistrement.controls.password.valid && userEnregistrement.controls.password.touched" class="obligation">*Champ obligatoire</p>
                         </div>
                     </div>
                 </mat-form-field>
                     <div class="d-flex justify-content-center mt-5">
                         <button type="submit" class="btn btn-outline-primary" matStepperNext [disabled]="userEnregistrement.invalid">Next</button>
                     </div>
+                    <p *ngIf="!userEnregistrement.controls.pseudo.valid" class="muted text-center">*Le pseudo accepte uniquement les lettres,les nombres et les traits d'unions (-_)</p>
+                    <p *ngIf="!userEnregistrement.controls.password.valid" class="muted text-center">*Le mot de passe est au moins de huit caractères et n'accepte pas les especes</p>
                 </form>
             </mat-step>
         </mat-stepper>

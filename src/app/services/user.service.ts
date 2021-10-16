@@ -32,13 +32,13 @@ export class UserService implements OnDestroy {
     this.user = userDatas;
     this.userInscription = true;
     this.resLog = true
-    console.log(this.user)
+    //console.log(this.user)
     this.emitPostServiceSubject()
   }
 
   userDeco(): void{
     this.socketService.send('deco user',this.user);
-    console.log(this.user);
+    //console.log(this.user);
     this.userInscription = false;
     this.resLog = false;
     this.user = [];
@@ -46,7 +46,7 @@ export class UserService implements OnDestroy {
   }
 
   emitPostServiceSubject() {
-    console.log(this.user)
+    //console.log(this.user)
     this.PostServiceSubject.next(this.user);
     this.PostLogServiceSubject.next(this.resLog);
     this.PostLoOutgServiceSubject.next(this.userInscription);
