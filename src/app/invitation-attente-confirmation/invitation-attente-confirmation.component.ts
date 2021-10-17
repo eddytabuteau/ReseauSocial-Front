@@ -15,6 +15,7 @@ export class InvitationAttenteConfirmationComponent implements OnInit, OnDestroy
   resRechercheUsers: unknown
   loading:boolean = false;
   resInvitation?: string;
+  pasInvitationAttenteConfirmation = false;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
@@ -52,6 +53,10 @@ export class InvitationAttenteConfirmationComponent implements OnInit, OnDestroy
           });
           this.loading = false;
           this.users = users
+
+          if(this.users.length == 0){
+            this.pasInvitationAttenteConfirmation = true;
+          }
       })
     })
   

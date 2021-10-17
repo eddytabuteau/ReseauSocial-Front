@@ -107,11 +107,13 @@ export class RechercheAmiComponent implements OnInit, OnDestroy {
   }
   
   deleteUser(user: any){
-    user.deleteUser = true;
+    if (confirm('Etes vous sur de supprimer le compte ?')){
+      user.deleteUser = true;
     this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
     this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
       //console.log(data)
     })
+    }
   }
 
   listeAmis(user: any): void{

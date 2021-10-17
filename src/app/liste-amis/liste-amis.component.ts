@@ -16,6 +16,7 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
   loading:boolean = false;
   resInvitation?: string;
   listeAmisConfDemandeurRecommandation: any;
+  pasDamis = false;
 
   
   rejoindreDiscussionEncoursUser: any;
@@ -183,6 +184,10 @@ export class ListeAmisComponent implements OnInit, OnDestroy {
             this.rejoindreConversationUserOn(this.user)
             this.users = users
             //console.log(users)
+
+            if(this.users.length == 0){
+              this.pasDamis = true;
+            }
         })
       })
     }
@@ -352,11 +357,14 @@ const pseudoReceveur =  this.userService.user[0].pseudo
   }
 
   deleteUser(user: any){
-    user.deleteUser = true;
-    this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
-    this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
-      //console.log(data)
-    })
+    if (confirm('Etes vous sur de supprimer le compte ?')){
+      user.deleteUser = true;
+      this.socketService.send('user supp',{pseudo: user.pseudo, mail:user.email});
+      this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
+        //console.log(data)
+      })
+    }
+   
   }
 
 

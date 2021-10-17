@@ -314,7 +314,7 @@
                     <mat-form-field appearance="fill">
                     <div class="d-flex justify-content-around flex-wrap mt-5">
                         <div class="form-group">
-                            <label for="photo">Choisir une photo de profil</label>
+                            <label for="photo" class="updatePhoto">Choisir une photo de profil</label>
                             <input type="file"
                                    id="photo" class="form-control" formControlName="photo"
                                    accept="image/png, image/jpeg" (change)="onFileSelected($event)" (click)="test()">
@@ -685,10 +685,12 @@
                     <ng-template matStepLabel>Photo de profil</ng-template>
                     <mat-form-field appearance="fill">
                     <div class="d-flex justify-content-around flex-wrap mt-5">
-                            <label for="photo" (click)="test()"style="color: #227afd;">Choisir une photo de profil</label>
+                        <div class="form-group">
+                            <label for="photo" class="updatePhoto">Choisir une photo de profil</label>
                             <input type="file"
                                    id="photo" class="form-control" formControlName="photo"
-                                   accept="image/png, image/jpeg" (change)="onFileSelected($event)" >
+                                   accept="image/png, image/jpeg" (change)="onFileSelected($event)" (click)="test()">
+                        </div>
                     </div>
                     <p *ngIf="!userPhoto.controls.photo.valid" class="muted text-center">*Uniquement les formats png et jpeg sont acceptés</p>
                     <div class="text-center mt-3">
@@ -738,3 +740,4 @@
         </mat-stepper>
     </div>
 </div>
+

@@ -14,6 +14,7 @@ export class InvitationEnCoursComponent implements OnInit, OnDestroy {
   intervalId?: any
   resRechercheUsers: unknown
   loading:boolean = false;
+  pasInvitationEncours = false;
 
   constructor(private userService: UserService, private router: Router, private socketService: SocketService) { }
 
@@ -50,6 +51,10 @@ export class InvitationEnCoursComponent implements OnInit, OnDestroy {
           });
           this.loading = false;
           this.users = users
+
+          if(this.users.length == 0){
+            this.pasInvitationEncours = true;
+          }
       })
     })
   

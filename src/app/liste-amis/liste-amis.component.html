@@ -28,6 +28,7 @@
             <input type="text" class="form-control" placeholder="Recherche par pseudo..." id="serchUser">
         </div>
 
+        <p *ngIf="pasDamis" class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Vous n'avez pas encore d'amis</p>
         
 
         <div *ngFor="let user of users" class="userBlockMobil col-md-4" style="margin: auto;">

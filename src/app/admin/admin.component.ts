@@ -99,13 +99,15 @@ export class AdminComponent implements OnInit {
   }
 
   deleteCompte(): void{
-    // @ts-ignore: Object is possibly 'null'.
+    if (confirm('Etes vous sur de supprimer le compte ?')){
+      // @ts-ignore: Object is possibly 'null'.
     this.socketService.send('user supp',{pseudo: this.userService.user[0].pseudo, mail:this.userService.user[0].email});
     this.socketService.listenOnce('reponse user supp').subscribe((data) =>{
       //console.log(data)
       this.userService.userDeco()
       this.router.navigate(['/'])
     })
+    }
   }
 
 

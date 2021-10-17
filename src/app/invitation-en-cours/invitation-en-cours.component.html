@@ -2,6 +2,8 @@
     <input type="text" class="form-control mt-2" placeholder="Recherche par pseudo..." id="serchUser">
 </div>
 
+<p *ngIf="pasInvitationEncours" class="text-center text-primary" style="font-weight: bold;padding-top: 1%;">Pas d'invitation en cours</p>
+
 <div *ngIf="loading">
     <app-loading-spinner></app-loading-spinner>
 </div>
